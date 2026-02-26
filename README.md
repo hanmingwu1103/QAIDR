@@ -2,7 +2,7 @@
 # QAIDR <img src="man/figures/logo.png" align="right" height="138" alt="" />
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/hanmingwu1103/QAIDR/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/hanmingwu1103/QAIDR/actions)
+[![R-CMD-check](https://github.com/hanmingwu1103/QAIDR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hanmingwu1103/QAIDR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 **Quality Assessment for Interval-Based Dimensionality Reduction**
