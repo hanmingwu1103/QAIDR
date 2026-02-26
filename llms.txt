@@ -62,6 +62,12 @@ plot_k_profiles(profiles, metric = "Wasserstein")
 - [`vignette("simulation-study")`](https://hanmingwu1103.github.io/QAIDR/articles/simulation-study.html)
   – Reproduces the simulation study
 
+## Citation
+
+Paulo Canas Rodrigues and Han-Ming Wu (2025), Interval-metric
+co-ranking: quality assessment of dimensionality reduction for
+interval-valued data, Technical report.
+
 ## License
 
 MIT
