@@ -1,0 +1,152 @@
+---
+title: "Real Data Analysis with QAIDR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Real Data Analysis with QAIDR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 10,
+  fig.height = 7,
+  eval = FALSE
+)
+```
+
+This vignette reproduces the real data analysis from the QAIDR paper, applying
+six interval dimensionality reduction methods to the Cars and Face datasets and
+evaluating them with co-ranking quality and behavior indices.
+
+**Prerequisites:** The DR methods require `symbolicDA`, `RSDA`, and `umap`
+packages. Install them with:
+
+```{r install, eval = FALSE}
+install.packages(c("symbolicDA", "RSDA", "umap"))
+```
+
+## Cars Dataset
+
+The Cars dataset contains 27 car models described by 4 interval-valued
+variables (Price, Engine Capacity, Top Speed, Acceleration) with 4 class
+labels (Berlina, Luxury, Sportive, Utilitarian).
+
+```{r cars-setup}
+library(QAIDR)
+set.seed(2025)
+
+data(cars_mm)
+print(cars_mm)
+summary(cars_mm)
+```
+
+### Standardize
+
+```{r cars-std}
+x <- standardize(cars_mm)
+```
+
+### Run all 6 DR methods
+
+```{r cars-dr}
+proj <- run_idr(x, labels = cars_mm$labels)
+print(proj)
+```
+
+### 2D projection plots
+
+Each DR method produces a 2D projection where intervals are displayed as
+rectangles:
+
+```{r cars-proj, fig.width = 12, fig.height = 8}
+plot_projections(proj,
+                 labels = cars_mm$labels,
+                 obs_labels = rownames(cars_mm$centers))
+```
+
+### Quality assessment with permutation tests
+
+Evaluate all 6 methods across 4 metrics at neighbourhood size K = 5, with
+1000 permutations for significance testing:
+
+```{r cars-assess}
+result <- assess_quality(x, proj, K = 5,
+                         perm_test = TRUE, n_perm = 1000)
+print(result)
+```
+
+An asterisk (`*`) indicates statistical significance at the 0.05 level.
+
+### K-neighbourhood profiles
+
+Quality and behavior indices across all neighbourhood sizes K:
+
+```{r cars-profiles, fig.width = 12, fig.height = 9}
+profiles <- k_profiles(x, proj)
+
+# Plot for each metric
+for (met in c("Int-Euclidean", "Hausdorff", "Ichino-Yaguchi", "Wasserstein")) {
+  plot_k_profiles(profiles, metric = met)
+}
+```
+
+## Face Dataset
+
+The Face dataset contains 27 individuals described by 6 interval-valued
+anthropometric measurements (AD, BC, AH, DH, EH, GH).
+
+```{r face-setup}
+data(facedata_mm)
+print(facedata_mm)
+```
+
+### Standardize and run DR
+
+```{r face-dr}
+x_face <- standardize(facedata_mm)
+proj_face <- run_idr(x_face, labels = facedata_mm$labels)
+```
+
+### Projection plots
+
+```{r face-proj, fig.width = 12, fig.height = 8}
+plot_projections(proj_face,
+                 labels = facedata_mm$labels,
+                 obs_labels = rownames(facedata_mm$centers))
+```
+
+### Quality assessment
+
+```{r face-assess}
+result_face <- assess_quality(x_face, proj_face, K = 5,
+                              perm_test = TRUE, n_perm = 1000)
+print(result_face)
+```
+
+### K-neighbourhood profiles
+
+```{r face-profiles, fig.width = 12, fig.height = 9}
+profiles_face <- k_profiles(x_face, proj_face)
+plot_k_profiles(profiles_face, metric = "Wasserstein")
+```
+
+## Interpreting Results
+
+The assessment table reports six indices for each method-metric combination:
+
+| Index | Type | Range | Interpretation |
+|-------|------|-------|----------------|
+| Q_TC | Quality | [0, 1] | Average of Trustworthiness and Continuity |
+| B_TC | Behavior | [-1, 1] | Continuity - Trustworthiness (+ = extrusion-dominant) |
+| Q_RE | Quality | [0, 1] | 1 - average relative rank error |
+| B_RE | Behavior | [-1, 1] | Intrusion error - Extrusion error |
+| Q_LC | Quality | [0, 1] | Fraction of K-neighbours preserved |
+| B_LC | Behavior | [-1, 1] | Asymmetry in local continuity |
+
+**Quality indices** closer to 1 indicate better structure preservation.
+**Behavior indices** near 0 indicate balanced intrusions and extrusions;
+large positive or negative values indicate directional bias in the
+embedding.
