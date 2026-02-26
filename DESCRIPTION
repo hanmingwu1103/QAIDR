@@ -39,5 +39,5 @@ Suggests:
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 LazyData: true
-URL: https://github.com/hmwu/QAIDR
-BugReports: https://github.com/hmwu/QAIDR/issues
+URL: https://github.com/hanmingwu1103/QAIDR
+BugReports: https://github.com/hanmingwu1103/QAIDR/issues
