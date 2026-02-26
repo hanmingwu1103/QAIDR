@@ -1,0 +1,215 @@
+# Simulation Study with QAIDR
+
+This vignette reproduces the simulation study from the QAIDR paper.
+Three scenarios test different aspects of the quality and behavior
+indices.
+
+**Prerequisites:** Requires `symbolicDA`, `RSDA`, and `umap` packages.
+
+## Common Setup
+
+``` r
+library(QAIDR)
+set.seed(2025)
+
+methods_list <- c("C-PCA", "V-PCA", "MR-PCA", "SPCA", "IMDS", "Int-UMAP")
+metrics_list <- c("Int-Euclidean", "Hausdorff", "Ichino-Yaguchi", "Wasserstein")
+
+# Set N_PERM = 1000 for final paper results
+N_PERM <- 10
+```
+
+## Scenario I: Varying Variability
+
+Tests how the indices respond to different radii magnitudes. Three
+groups of 100 observations each have small, medium, and large interval
+widths.
+
+``` r
+N <- 300; P <- 5
+centers <- matrix(rnorm(N * P), N, P)
+radii <- matrix(0, N, P)
+
+# Group 1: Small radii (0.1 -- 0.2)
+radii[1:100, ] <- matrix(runif(100 * P, 0.1, 0.2), 100, P)
+# Group 2: Medium radii (1.0 -- 1.2)
+radii[101:200, ] <- matrix(runif(100 * P, 1.0, 1.2), 100, P)
+# Group 3: Large radii (5.0 -- 6.0)
+radii[201:300, ] <- matrix(runif(100 * P, 5.0, 6.0), 100, P)
+
+colnames(centers) <- paste0("V", seq_len(P))
+colnames(radii) <- paste0("V", seq_len(P))
+
+x_s1 <- interval_data(centers, radii)
+x_s1_std <- standardize(x_s1)
+```
+
+### Run DR and evaluate
+
+``` r
+proj_s1 <- run_idr(x_s1_std)
+
+res_s1 <- data.frame()
+for (met in methods_list) {
+  cat("Processing:", met, "\n")
+  out <- proj_s1[[met]]
+
+  for (metric in metrics_list) {
+    Dh <- idist(x_s1_std, metric = metric)
+    Dl <- if (out$type == "Point") {
+      as.matrix(dist(out$C))
+    } else {
+      idist(out$C, out$R, metric)
+    }
+
+    pt <- perm_test(Dh, Dl, K = 10, n_perm = N_PERM)
+    res_s1 <- rbind(res_s1, data.frame(
+      Method = met, Metric = metric,
+      Q_TC = sprintf("%.3f", pt$vals["Q_TC"]),
+      B_TC = sprintf("%.3f", pt$vals["B_TC"]),
+      Q_RE = sprintf("%.3f", pt$vals["Q_RE"]),
+      B_RE = sprintf("%.3f", pt$vals["B_RE"]),
+      Q_LC = sprintf("%.3f", pt$vals["Q_LC"]),
+      B_LC = sprintf("%.3f", pt$vals["B_LC"])
+    ))
+  }
+}
+print(res_s1)
+```
+
+Or more concisely with
+[`assess_quality()`](https://hanmingwu1103.github.io/QAIDR/reference/assess_quality.md):
+
+``` r
+result_s1 <- assess_quality(x_s1_std, proj_s1, K = 10,
+                            perm_test = TRUE, n_perm = N_PERM)
+print(result_s1)
+```
+
+## Scenario II: Interval Swiss Roll
+
+Tests how well DR methods preserve the structure of a nonlinear manifold
+when data are interval-valued.
+
+``` r
+dat_sr <- gen_interval_swissroll(n = 800, seed = 42)
+print(dat_sr)
+```
+
+### Standardize and run DR
+
+``` r
+dat_sr_std <- standardize(dat_sr)
+proj_sr <- run_idr(dat_sr_std)
+
+res_s2 <- data.frame()
+for (met in methods_list) {
+  cat("Processing:", met, "\n")
+  out <- proj_sr[[met]]
+
+  for (metric in metrics_list) {
+    Dh <- idist(dat_sr_std, metric = metric)
+    Dl <- if (out$type == "Point") {
+      as.matrix(dist(out$C))
+    } else {
+      idist(out$C, out$R, metric)
+    }
+
+    pt <- perm_test(Dh, Dl, K = 10, n_perm = N_PERM)
+    res_s2 <- rbind(res_s2, data.frame(
+      Method = met, Metric = metric,
+      Q_TC = sprintf("%.3f", pt$vals["Q_TC"]),
+      B_TC = sprintf("%.3f", pt$vals["B_TC"]),
+      Q_RE = sprintf("%.3f", pt$vals["Q_RE"]),
+      B_RE = sprintf("%.3f", pt$vals["B_RE"]),
+      Q_LC = sprintf("%.3f", pt$vals["Q_LC"]),
+      B_LC = sprintf("%.3f", pt$vals["B_LC"])
+    ))
+  }
+}
+print(res_s2)
+```
+
+## Scenario III: Stability Analysis
+
+Tests robustness of indices under small perturbations of interval radii.
+Mean Absolute Error (MAE) and sign-flip rates are computed over 100
+iterations.
+
+``` r
+N <- 200; P <- 5; K <- 10; N_ITER <- 100
+center_sd <- 0.05; r_min <- 1.2; r_max <- 2.5; eps <- 0.25
+
+# Generate base data with dense overlap
+centers_base <- matrix(rnorm(N * P, mean = 0, sd = center_sd), N, P)
+radii_base <- matrix(runif(N * P, r_min, r_max), N, P)
+colnames(centers_base) <- paste0("V", seq_len(P))
+colnames(radii_base) <- paste0("V", seq_len(P))
+
+x_base <- interval_data(centers_base, radii_base)
+xs_base <- standardize(x_base)
+proj_base <- run_idr(xs_base)
+```
+
+### Compute MAE and sign-flip rates
+
+``` r
+stability <- data.frame()
+
+for (met in names(proj_base)) {
+  for (mn in metrics_list) {
+    # Baseline indices
+    Dh0 <- idist(xs_base, metric = mn)
+    out <- proj_base[[met]]
+    Dl <- if (out$type == "Point") {
+      as.matrix(dist(out$C))
+    } else {
+      idist(out$C, out$R, mn)
+    }
+    base_vals <- coranking_indices(Dh0, Dl, K = K)
+
+    # Perturb radii N_ITER times
+    vals <- matrix(NA, nrow = N_ITER, ncol = 6)
+    for (i in seq_len(N_ITER)) {
+      mult_noise <- matrix(runif(N * P, -eps, eps), N, P)
+      r_pert <- radii_base * (1 + mult_noise)
+      r_pert[r_pert < 1e-8] <- 1e-8
+      Dh <- idist(centers_base, r_pert, mn)
+      vals[i, ] <- coranking_indices(Dh, Dl, K = K)
+    }
+
+    # MAE
+    mae <- colMeans(abs(vals - matrix(base_vals, nrow = N_ITER,
+                                      ncol = 6, byrow = TRUE)))
+
+    # Sign-flip rate for behavior indices (columns 2, 4, 6)
+    sign_flip <- c(
+      mean(sign(vals[, 2]) != sign(base_vals[2])),
+      mean(sign(vals[, 4]) != sign(base_vals[4])),
+      mean(sign(vals[, 6]) != sign(base_vals[6]))
+    )
+
+    stability <- rbind(stability, data.frame(
+      Method = met, Metric = mn,
+      MAE_Q_TC = mae[1], MAE_B_TC = mae[2],
+      MAE_Q_RE = mae[3], MAE_B_RE = mae[4],
+      MAE_Q_LC = mae[5], MAE_B_LC = mae[6],
+      SignFlip_B_TC = sign_flip[1],
+      SignFlip_B_RE = sign_flip[2],
+      SignFlip_B_LC = sign_flip[3]
+    ))
+  }
+}
+
+print(stability)
+```
+
+## Notes
+
+- For reproducible paper results, set `N_PERM = 1000` and
+  `N_ITER = 100`.
+- The `eval = FALSE` default avoids long computation during vignette
+  building. Copy the code into an R session with the required packages
+  installed to run interactively.
+- Scenario III is designed with dense overlap (`center_sd = 0.05`,
+  `r_min = 1.2`) to stress-test the stability of the indices.
