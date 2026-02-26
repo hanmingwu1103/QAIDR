@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/hanmingwu1103/QAIDR/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/hanmingwu1103/QAIDR/blob/v0.1.0/inst/CITATION)
 
 Wu H (2025). *QAIDR: Quality Assessment for Interval-Based
 Dimensionality Reduction*. R package version 0.1.0,
