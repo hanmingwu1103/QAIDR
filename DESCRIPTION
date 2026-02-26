@@ -1,0 +1,43 @@
+Package: QAIDR
+Title: Quality Assessment for Interval-Based Dimensionality Reduction
+Version: 0.1.0
+Authors@R:
+    person("Han-Ming", "Wu", , "hmwu@stat.ntpu.edu.tw", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0656-374X"))
+Description: Provides quality and behavior indices for evaluating
+    interval-based dimensionality reduction (DR) methods using co-ranking
+    matrices. Supports multiple interval distance metrics (Euclidean,
+    Hausdorff, Ichino-Yaguchi, L2-Wasserstein) and assessment criteria
+    (Trustworthiness & Continuity, MRRE, LCMC). Includes wrappers for
+    symbolic PCA methods, interval MDS, and interval UMAP, as well as
+    permutation tests for statistical significance.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 3.5.0)
+Imports:
+    ggplot2,
+    gridExtra,
+    grid,
+    rlang,
+    stats,
+    utils
+Suggests:
+    symbolicDA,
+    RSDA,
+    umap,
+    MASS,
+    vegan,
+    ggforce,
+    dplyr,
+    stringr,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+LazyData: true
+URL: https://github.com/hmwu/QAIDR
+BugReports: https://github.com/hmwu/QAIDR/issues
