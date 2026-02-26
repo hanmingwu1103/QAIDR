@@ -4,5 +4,5 @@ bibentry(
   author   = person("Han-Ming", "Wu"),
   year     = "2025",
   note     = "R package version 0.1.0",
-  url      = "https://github.com/hmwu/QAIDR"
+  url      = "https://github.com/hanmingwu1103/QAIDR"
 )

@@ -11,8 +11,8 @@ Provides quality and behavior indices for evaluating interval-based dimensionali
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/hmwu/QAIDR}
-  \item Report bugs at \url{https://github.com/hmwu/QAIDR/issues}
+  \item \url{https://github.com/hanmingwu1103/QAIDR}
+  \item Report bugs at \url{https://github.com/hanmingwu1103/QAIDR/issues}
 }
 
 }
