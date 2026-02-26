@@ -46,8 +46,82 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9">
-Provides quality and behavior indices for evaluating interval-based dimensionality reduction (DR) methods using co-ranking matrices. Supports multiple interval distance metrics (Euclidean, Hausdorff, Ichino-Yaguchi, L2-Wasserstein) and assessment criteria (Trustworthiness &amp; Continuity, MRRE, LCMC). Includes wrappers for symbolic PCA methods, interval MDS, and interval UMAP, as well as permutation tests for statistical significance.
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header"><h1 id="qaidr-">QAIDR <img src="reference/figures/logo.png" align="right" height="138" alt=""><a class="anchor" aria-label="anchor" href="#qaidr-"></a>
+</h1></div>
+<!-- badges: start -->
+
+<p><strong>Quality Assessment for Interval-Based Dimensionality Reduction</strong></p>
+<p>QAIDR provides tools for evaluating how well interval-based dimensionality reduction (DR) methods preserve the structure of high-dimensional interval data, using a co-ranking matrix framework.</p>
+<div class="section level2">
+<h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
+</h2>
+<ul>
+<li>
+<strong>4 interval distance metrics</strong>: Interval Euclidean, Hausdorff, Ichino-Yaguchi, L2-Wasserstein</li>
+<li>
+<strong>6 co-ranking indices</strong>: Quality (Q) and Behavior (B) variants of Trustworthiness &amp; Continuity, MRRE, and LCMC</li>
+<li>
+<strong>6 DR method wrappers</strong>: C-PCA, V-PCA, MR-PCA, SPCA, IMDS, Int-UMAP</li>
+<li>
+<strong>Permutation tests</strong> for statistical significance</li>
+<li>
+<strong>Visualization</strong>: 2D projection plots and K-neighbourhood profile plots</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>Install the development version from GitHub:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"hanmingwu1103/QAIDR"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hanmingwu1103.github.io/QAIDR/">QAIDR</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load and standardize the built-in Cars dataset</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cars_mm</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/standardize.html">standardize</a></span><span class="op">(</span><span class="va">cars_mm</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Compute interval distances</span></span>
+<span><span class="va">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/idist.html">idist</a></span><span class="op">(</span><span class="va">x</span>, metric <span class="op">=</span> <span class="st">"Wasserstein"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Run all 6 DR methods (requires symbolicDA, RSDA)</span></span>
+<span><span class="va">proj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_idr.html">run_idr</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Assess quality across all method-metric combinations</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/assess_quality.html">assess_quality</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">proj</span>, K <span class="op">=</span> <span class="fl">5</span>, perm_test <span class="op">=</span> <span class="cn">TRUE</span>, n_perm <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Visualize</span></span>
+<span><span class="fu"><a href="reference/plot_projections.html">plot_projections</a></span><span class="op">(</span><span class="va">proj</span>, labels <span class="op">=</span> <span class="va">cars_mm</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">profiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/k_profiles.html">k_profiles</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">proj</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/plot_k_profiles.html">plot_k_profiles</a></span><span class="op">(</span><span class="va">profiles</span>, metric <span class="op">=</span> <span class="st">"Wasserstein"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<ul>
+<li><a href="https://hanmingwu1103.github.io/QAIDR/">Package website</a></li>
+<li>
+<code><a href="articles/introduction.html">vignette("introduction")</a></code> – Basic workflow</li>
+<li>
+<code><a href="articles/real-data-analysis.html">vignette("real-data-analysis")</a></code> – Reproduces the real data analysis</li>
+<li>
+<code><a href="articles/simulation-study.html">vignette("simulation-study")</a></code> – Reproduces the simulation study</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+</h2>
+<p>MIT</p>
+</div>
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
@@ -80,7 +154,12 @@ Provides quality and behavior indices for evaluating interval-based dimensionali
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/hanmingwu1103/QAIDR/actions" class="external-link"><img src="https://github.com/hanmingwu1103/QAIDR/actions/workflows/pkgdown.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
