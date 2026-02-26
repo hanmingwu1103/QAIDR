@@ -1,7 +1,7 @@
-# Run from Rcode-QAIDR directory: Rscript QAIDR/data-raw/make_data.R
+# Run from QAIDR package root: Rscript data-raw/make_data.R
 
 # --- Cars data (27 obs x 4 interval variables) ---
-cars_df <- read.csv("Cars_MM.csv")
+cars_df <- read.csv("data-raw/Cars_MM.csv")
 int_min_at <- c(1, 3, 5, 7)
 y_at <- 9
 
@@ -18,7 +18,7 @@ cars_mm <- structure(
 )
 
 # --- Face data (27 obs x 6 interval variables) ---
-face_df <- read.csv("facedata_MM.csv")
+face_df <- read.csv("data-raw/facedata_MM.csv")
 int_min_at_f <- seq(2, 12, 2)
 y_at_f <- 1
 
@@ -37,8 +37,8 @@ facedata_mm <- structure(
 )
 
 # Save to package data directory
-save(cars_mm, file = "QAIDR/data/cars_mm.rda", compress = "xz")
-save(facedata_mm, file = "QAIDR/data/facedata_mm.rda", compress = "xz")
+save(cars_mm, file = "data/cars_mm.rda", compress = "xz")
+save(facedata_mm, file = "data/facedata_mm.rda", compress = "xz")
 
 cat("cars_mm:", nrow(cars_mm$centers), "obs x", ncol(cars_mm$centers), "vars\n")
 cat("facedata_mm:", nrow(facedata_mm$centers), "obs x", ncol(facedata_mm$centers), "vars\n")
