@@ -4,3 +4,7 @@
 ^LICENSE\.md$
 ^\.github$
 ^\.claude$
+^_pkgdown\.yml$
+^docs$
+^_build_site\.R$
+^pkgdown$

@@ -1,0 +1,55 @@
+url: https://hanmingwu1103.github.io/QAIDR/
+
+template:
+  bootstrap: 5
+
+reference:
+  - title: "Interval Data"
+    desc: "Create and manipulate interval-valued data objects."
+    contents:
+      - interval_data
+      - interval_data_from_mm
+      - interval_data_from_array
+      - standardize
+      - cars_mm
+      - facedata_mm
+
+  - title: "Distance Metrics"
+    desc: "Interval distance functions for comparing interval-valued observations."
+    contents:
+      - idist
+      - idist_euclidean
+      - idist_hausdorff
+      - idist_ichino_yaguchi
+      - idist_wasserstein
+
+  - title: "Quality Assessment"
+    desc: "Co-ranking indices, permutation tests, and K-profiles."
+    contents:
+      - coranking_indices
+      - assess_quality
+      - perm_test
+      - k_profiles
+
+  - title: "Dimensionality Reduction"
+    desc: "Wrappers for interval DR methods."
+    contents:
+      - run_idr
+      - umap_config_default
+      - umap_config_strong
+      - gen_interval_swissroll
+
+  - title: "Visualization"
+    desc: "Plotting functions for projections and index profiles."
+    contents:
+      - plot_projections
+      - plot_k_profiles
+
+articles:
+  - title: "Getting Started"
+    contents:
+      - introduction
+  - title: "Examples"
+    contents:
+      - real-data-analysis
+      - simulation-study
