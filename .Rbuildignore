@@ -4,6 +4,7 @@
 ^LICENSE\.md$
 ^\.github$
 ^\.claude$
+^README\.md$
 ^_pkgdown\.yml$
 ^docs$
 ^_build_site\.R$
