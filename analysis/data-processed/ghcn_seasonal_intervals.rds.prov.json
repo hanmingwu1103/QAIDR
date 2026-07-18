@@ -1,0 +1,14 @@
+{
+  "name": "ghcn_seasonal_intervals.rds",
+  "provenance_status": "backfilled",
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/midscale_pilot_ghcn.R": "19f6ed11b83943411e07748b7ee432af3d62a435f37f5c81ae2b25ab89841c59",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/ghcnd_hcn.tar.gz": "f21b14ed2391be0a3da038cb908df0412ef5fde554dd8f7f4dbcc5c9be8b38dc",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/ghcnd-stations.txt": "fedc8bbe92f9b1eee0a57f8886e5e022965a542efa60710c01b47a838120b18d",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/ghcnd-version.txt": "ad234b11acb12d474f083562b2900fb74ce9305a533e5b035e214a686b3ead0a",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/readme.txt": "3a71ae355252a6693a56a473ed7182b500ae7816c2cb2b2ce708c1e9ea9dcfde"
+  },
+  "output_hashes": {
+    "file": "eb0ff59a7a9f72ec07d371c426688d098c7e5710cfc7169b517b869d3367d33a"
+  }
+}

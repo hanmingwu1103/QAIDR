@@ -26,7 +26,8 @@ It supports:
   Ichino-Yaguchi, L2-Wasserstein
 - **3 quality/behavior index families**: T&C, MRRE, LCMC (6 indices total)
 - **6 DR methods**: C-PCA, V-PCA, MR-PCA, SPCA, IMDS, Int-UMAP
-- **Statistical tests**: Permutation-based significance testing
+- **Statistical tests**: permutation inference with family-wise adjustment
+- **Baselines**: center-only assessment to isolate information from widths
 
 ## Quick Start
 
@@ -106,17 +107,27 @@ print(indices)
 ```
 
 - **Quality indices** (Q_TC, Q_RE, Q_LC): range [0, 1], higher is better
-- **Behavior indices** (B_TC, B_RE, B_LC): range [-1, 1], 0 means balanced
+- **Behavior indices** (B_TC, B_RE, B_LC): range [-1, 1], 0 means balanced;
+  positive values indicate intrusion-dominated embeddings
 
-### 5. Using Built-in Datasets
+### 5. Using `dataSDA` Datasets
+
+QAIDR does not redistribute example datasets. The converter below reads the
+interval encodings used by the CRAN package `dataSDA`.
 
 ```{r datasets}
-data(cars_mm)
-print(cars_mm)
-summary(cars_mm)
+if (requireNamespace("dataSDA", quietly = TRUE)) {
+  data("cars.int", package = "dataSDA")
+  cars <- interval_data_from_dataSDA(cars.int)
+  print(cars)
 
-data(facedata_mm)
-print(facedata_mm)
+  data("face.iGAP", package = "dataSDA")
+  face_labels <- sub("[[:digit:]]+$", "", rownames(face.iGAP))
+  face <- interval_data_from_dataSDA(face.iGAP, labels = face_labels)
+  print(face)
+} else {
+  message("Install 'dataSDA' to run the dataset examples.")
+}
 ```
 
 ## Full Workflow
@@ -130,19 +141,22 @@ The typical QAIDR workflow is:
 5. Visualize with `plot_projections()` and `plot_k_profiles()`
 
 ```{r full-workflow, eval = FALSE}
-# Complete example (requires symbolicDA, RSDA)
-data(cars_mm)
-x <- standardize(cars_mm)
+# Complete example (requires dataSDA, symbolicDA, RSDA, umap, and dplyr)
+data("cars.int", package = "dataSDA")
+cars <- interval_data_from_dataSDA(cars.int)
+x <- standardize(cars)
 
 proj <- run_idr(x)
-result <- assess_quality(x, proj, K = 5, perm_test = TRUE, n_perm = 1000)
+result <- assess_quality(x, proj, K = 5, perm_test = TRUE, n_perm = 999,
+                         baseline = TRUE)
 print(result)
 
-plot_projections(proj, labels = cars_mm$labels)
+plot_projections(proj, labels = cars$labels)
 
 profiles <- k_profiles(x, proj, K_max = 20)
 plot_k_profiles(profiles, metric = "Wasserstein")
 ```
 
-See the "Real Data Analysis" and "Simulation Study" vignettes for complete
-examples.
+See the "Real Data Analysis" and "Simulation Study" vignettes for compact
+tutorials. The complete seeded manuscript pipeline and frozen outputs are
+documented in `README_REPRODUCIBILITY.md` in the GitHub repository.

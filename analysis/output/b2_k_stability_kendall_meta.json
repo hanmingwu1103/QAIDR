@@ -1,0 +1,31 @@
+{
+  "name": "b2_k_stability_kendall",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/b2_k_profiles_merge.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-16 21:57:42 +0800",
+  "elapsed_sec": 13.0962,
+  "max_gc_mb": 151.5,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/b2_k_profiles.R": "986b8e5937c9cebf4f09c044b6ef0df73547f1065947c7191ed18d199e6e2860",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/analysis/B2_PREREGISTRATION.md": "2c25e3b2d39ee824043fdf5261e299f13773c5a7734799f7f35ba6257f2df67a",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76"
+  },
+  "output_hashes": {
+    "csv": "ea65a4256efd87251df38726840280e34b20096a2c0cb18ec4e23ade329719db",
+    "rds": "59c276effd9eea496e25334f77c4078028c491910ebe68f8a1e573e1823f2b6c"
+  },
+  "seeds": {},
+  "extra": []
+}

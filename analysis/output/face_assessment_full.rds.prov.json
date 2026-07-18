@@ -1,0 +1,15 @@
+{
+  "name": "face_assessment_full.rds",
+  "provenance_status": "backfilled",
+  "created": "2026-07-16 22:01:13 +0800",
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/face.R": "eca2ec8c89651195a1a2000bb86aa32971bac74efb617e5918e8332758520e01",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/data-raw/facedata_MM.csv": "55f8e66d72579ea5d0b09cd7dbed97b29dc8447e8b694e070b03e74d8e9eb885",
+    "Rcode-QAIDR/QAIDR/data/facedata_mm.rda": "86f3288485d2c1c0477c25c38599f17f10fcdb24d5c02cc10d6bc46f041126b5"
+  },
+  "output_hashes": {
+    "file": "79b8377081684cb5cb221c0a8ddd75225332167add0e0e64f5fd8390898c2292"
+  },
+  "note": "sidecar added by b2_provenance_backfill.R"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "scenario1_calibration",
+  "run_mode": "full",
+  "created": "2026-07-16 11:08:18 +0800",
+  "elapsed_sec": 2609.8419,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": [
+    "0.2.0",
+    "0.6.2",
+    "3.2.5",
+    "0.2.10.0",
+    "0.2.5"
+  ],
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenario1.R": "44398f578dd25aec638a7b24dfd946b9f6b91f312c57b0ce266e37f998df526c",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76"
+  },
+  "extra": {
+    "m": 999,
+    "n_cal": 25,
+    "engine": "joint-draws shared across metrics (Westfall-Young corrected)"
+  },
+  "provenance_status": "backfilled",
+  "output_hashes": {
+    "csv": "be33b00bfe7db3d8385d950683f638fd872d49ac51918ff965f02637b40f3313",
+    "rds": "7119ffd56329369e080ddf4dff83bad3bbc2ddf0ef54fa928fc27bc00fe52c4c"
+  }
+}

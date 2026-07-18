@@ -1,0 +1,31 @@
+{
+  "name": "b2_sensitivity",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/b2_sensitivity.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 14:32:21 +0800",
+  "elapsed_sec": 967.7931,
+  "max_gc_mb": 450.2,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "ece323ca6e9a7e0f2c5ce85bced6a97455d3ee5815b9d7bfa8fe1528982feff4",
+    "rds": "2ccb71abea7d1a04ddcabbf562596a103dcc988893acfdd30b9e8cf0bb834b29"
+  },
+  "seeds": {},
+  "extra": {
+    "prereg_sha256": "2c25e3b2d39ee824043fdf5261e299f13773c5a7734799f7f35ba6257f2df67a",
+    "guidance_rule": "adequate iff max range over ALL methods < 0.02 on exact Face profiles; grid arm descriptive only",
+    "exceptional_contract": "Prompt E 2026-07-17: internal/boundary/tangency/persistent classification; ranges over tie-free open cells + nonexceptional endpoints"
+  }
+}

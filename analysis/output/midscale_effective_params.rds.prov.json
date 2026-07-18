@@ -1,0 +1,15 @@
+{
+  "name": "midscale_effective_params.rds",
+  "provenance_status": "backfilled",
+  "created": "2026-07-16 22:01:15 +0800",
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/midscale_ghcn.R": "7bb803ce28b284379fee265fe986c09a072dbeb9a686be26dec0d9794ca4f8f4",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/analysis/data-processed/ghcn_seasonal_intervals.rds": "eb0ff59a7a9f72ec07d371c426688d098c7e5710cfc7169b517b869d3367d33a",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/ghcnd_hcn.tar.gz": "f21b14ed2391be0a3da038cb908df0412ef5fde554dd8f7f4dbcc5c9be8b38dc"
+  },
+  "output_hashes": {
+    "file": "508d9a55ed20d37eaa4b95b2bf4f13f518b88371450996d6781c7ccf226695db"
+  },
+  "note": "sidecar added by b2_provenance_backfill.R"
+}

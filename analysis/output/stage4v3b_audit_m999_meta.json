@@ -1,0 +1,32 @@
+{
+  "name": "stage4v3b_audit_m999",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/stage4_audit_v3b.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 00:10:08 +0800",
+  "elapsed_sec": 1234.3497,
+  "max_gc_mb": 151.5,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "a1cc7c5d78000fa94021d809d98db0a1535b2ec29b15315a96371361c4474e27",
+    "rds": "e9194a017c82488b7ac8f0eb3adfb0671f746a397d9e0e7885a419680c9ee81d"
+  },
+  "seeds": {},
+  "extra": {
+    "n_rep": 2000,
+    "m": 999,
+    "seed_stream": "SEED_BASE+9.7e6/9.8e6+r",
+    "motivation": "m=199 audit anti-conservative; production m=999 audited"
+  }
+}

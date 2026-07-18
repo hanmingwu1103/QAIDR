@@ -11,7 +11,9 @@ idist_euclidean(centers, radii, lambda = 0.5)
 
 \item{radii}{Numeric matrix of interval half-widths (n x p).}
 
-\item{lambda}{Weight parameter in \eqn{[0, 1]} (default 0.5).}
+\item{lambda}{Weight parameter: one finite numeric scalar in \eqn{[0, 1]}
+(default 0.5); validated here as well as in the \code{idist()}
+dispatcher.}
 }
 \value{
 A symmetric n x n distance matrix.

@@ -1,0 +1,33 @@
+{
+  "name": "scalability_benchmark",
+  "run_mode": "full",
+  "created": "2026-07-15 07:08:37 +0800",
+  "elapsed_sec": 16505.7753,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": [
+    "0.2.0",
+    "0.6.2",
+    "3.2.5",
+    "0.2.10.0",
+    "0.2.5"
+  ],
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/benchmark.R": "a2ea8273aa530cc90156572dd4dd6bf043dbe7d81a39baa274c6e5cb8a39c4bd",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76"
+  },
+  "extra": {
+    "sizes": [
+      200,
+      500,
+      1000,
+      2000
+    ]
+  },
+  "provenance_status": "backfilled",
+  "output_hashes": {
+    "csv": "f517f1155619d4ac1c1d60c4509efb71b4e9c1cff95c11488d34529c334c0a3d",
+    "rds": "c9f04c67a4242ddc7a20e68e7c5ea832d89fbde36964cc0982cab76123e5c3b4"
+  }
+}

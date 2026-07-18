@@ -1,0 +1,2 @@
+# R's printed sessionInfo() aligns columns with intentional trailing spaces.
+analysis/output/*_sessionInfo.txt whitespace=-blank-at-eol

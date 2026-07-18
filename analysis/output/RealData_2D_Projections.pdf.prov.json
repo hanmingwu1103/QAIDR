@@ -1,0 +1,15 @@
+{
+  "name": "RealData_2D_Projections.pdf",
+  "provenance_status": "backfilled",
+  "created": "2026-07-16 22:01:15 +0800",
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/face.R": "eca2ec8c89651195a1a2000bb86aa32971bac74efb617e5918e8332758520e01",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/data-raw/facedata_MM.csv": "55f8e66d72579ea5d0b09cd7dbed97b29dc8447e8b694e070b03e74d8e9eb885",
+    "Rcode-QAIDR/QAIDR/data/facedata_mm.rda": "86f3288485d2c1c0477c25c38599f17f10fcdb24d5c02cc10d6bc46f041126b5"
+  },
+  "output_hashes": {
+    "file": "7e4f7d19edea967b98882a180f16adc393b532dee9a7b35025ca18ddfaa1829f"
+  },
+  "note": "sidecar added by b2_provenance_backfill.R"
+}

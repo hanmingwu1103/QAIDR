@@ -2,34 +2,39 @@
 % Please edit documentation in R/assessment.R
 \name{perm_test}
 \alias{perm_test}
-\title{Permutation test for a single DR projection}
+\title{Permutation test for a single pair of distance matrices}
 \usage{
-perm_test(D_high, D_low, K, n_perm = 1000)
+perm_test(
+  D_high,
+  D_low,
+  K,
+  n_perm = 999,
+  ties = c("error", "random"),
+  seed = NULL
+)
 }
 \arguments{
-\item{D_high}{High-dimensional distance matrix (n x n).}
+\item{D_high}{High-dimensional dissimilarity matrix.}
 
-\item{D_low}{Low-dimensional distance matrix (n x n).}
+\item{D_low}{Low-dimensional dissimilarity matrix.}
 
 \item{K}{Integer neighborhood size.}
 
-\item{n_perm}{Number of permutations (default 1000).}
+\item{n_perm}{Number of permutations (default 999).}
+
+\item{ties}{Tie policy (see \code{rank_matrix()}).}
+
+\item{seed}{Optional integer seed.}
 }
 \value{
-A list with elements:
-\describe{
-\item{vals}{Named vector of observed index values.}
-\item{pQ}{P-values for quality indices (one-tailed).}
-\item{pB}{P-values for behavior indices (two-tailed).}
-}
+List with \code{vals} (observed indices), \code{pQ} (one-sided
+upper p-values for quality indices), \code{pB} (two-sided p-values for
+behavior indices), and \code{null_stats} (the m x 6 null draws).
 }
 \description{
-Performs a permutation test to assess statistical significance of
-quality and behavior indices.
-}
-\examples{
-set.seed(42)
-Dh <- as.matrix(dist(matrix(rnorm(50), 10, 5)))
-Dl <- as.matrix(dist(matrix(rnorm(20), 10, 2)))
-pt <- perm_test(Dh, Dl, K = 3, n_perm = 99)
+Shares the permutation engine of \code{assess_quality()}: ranks are
+computed once and permuted (label-equivariance), the null uses a single
+uniform bijection applied to both endpoints, and p-values use
+\code{(c + 1) / (m + 1)} so the smallest attainable p-value is
+\code{1 / (m + 1)}.
 }

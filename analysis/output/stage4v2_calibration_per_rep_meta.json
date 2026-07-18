@@ -1,0 +1,35 @@
+{
+  "name": "stage4v2_calibration_per_rep",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/stage4_gate2.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-16 14:01:25 +0800",
+  "elapsed_sec": 86.5194,
+  "max_gc_mb": 151.5,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/stage4_gate2.R": "eca5d6c5c275a9421aef8a2c39cef229c8c3a7a7b4abd69f22a6783e3255b97b",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76"
+  },
+  "output_hashes": {
+    "csv": "86d4d4503dbca1feaf21d9f61a45920e660046e4ef6e72c0d12396f4ffa19623",
+    "rds": "f4a083efa86f374fbb35d0136988152214a48441a70920a4a6b4cd9881357215"
+  },
+  "seeds": {},
+  "extra": {
+    "m": 199,
+    "n_rep": 200,
+    "n": 60,
+    "K": 5
+  }
+}

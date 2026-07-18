@@ -1,0 +1,30 @@
+{
+  "name": "scenario2_tie_flags",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/unknown.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 23:26:56 +0800",
+  "elapsed_sec": 0.0616,
+  "max_gc_mb": 108.5,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "fbd6b15978608eaafe035632383b034f58d49cf1e491dae29858ff60199e71fc",
+    "rds": "ac804942dafbb75890172f887147096bde0588ae2673e328eb5fdaa079b1bfb0"
+  },
+  "seeds": {},
+  "extra": {
+    "rule": "any over replications",
+    "provenance": "Prompt E 2026-07-17: aggregation of the stored production per-replication flags (pipeline slip fix; scenario2.R now writes this artifact)"
+  }
+}

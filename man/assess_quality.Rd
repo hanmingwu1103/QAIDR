@@ -9,44 +9,62 @@ assess_quality(
   projections,
   K = 5,
   metrics = c("Int-Euclidean", "Hausdorff", "Ichino-Yaguchi", "Wasserstein"),
+  lambda = 0.5,
+  nu = 0.5,
+  baseline = TRUE,
   perm_test = FALSE,
-  n_perm = 1000
+  n_perm = 999,
+  ties = c("error", "random"),
+  seed = NULL
 )
 }
 \arguments{
-\item{x}{An \code{interval_data} object (standardized).}
+\item{x}{An \code{interval_data} object (standardized or raw; the caller
+controls preprocessing).}
 
-\item{projections}{An \code{idr_projections} object from \code{run_idr()},
-or a named list with the same structure.}
+\item{projections}{An \code{idr_projections} object from \code{run_idr()}.}
 
 \item{K}{Integer neighborhood size (default 5).}
 
-\item{metrics}{Character vector of distance metrics to evaluate.}
+\item{metrics}{Character vector of interval dissimilarities.}
 
-\item{perm_test}{Logical; perform permutation tests (default \code{FALSE}).}
+\item{lambda}{Optimism index for the Interval Euclidean score (default 0.5).}
 
-\item{n_perm}{Integer number of permutations (default 1000).}
+\item{nu}{Ichino-Yaguchi span weight (default 0.5).}
+
+\item{baseline}{Logical; add the center-only Euclidean evaluation row
+(default \code{TRUE}).}
+
+\item{perm_test}{Logical; perform permutation inference (default
+\code{FALSE}).}
+
+\item{n_perm}{Integer number of permutations (default 999).}
+
+\item{ties}{Tie policy passed to \code{rank_matrix()} (\code{"error"} for
+primary analyses).}
+
+\item{seed}{Optional integer seed for the permutation stream.}
 }
 \value{
-An object of class \code{qaidr_assessment} containing:
-\describe{
-\item{results}{Data frame with columns IDR, Metric, Q_TC, B_TC,
-Q_RE, B_RE, Q_LC, B_LC.}
-\item{pvalues}{Data frame of p-values (if \code{perm_test = TRUE}).}
-\item{K}{The neighborhood size used.}
-}
+A \code{qaidr_assessment} object: \code{results} (indices),
+\code{pvalues} (unadjusted), \code{pvalues_adj} (min-P adjusted),
+\code{null_draws} (joint permutation draws, for reproducible
+multiplicity adjustment), \code{K}, \code{params}.
 }
 \description{
-Computes quality and behavior indices for each combination of DR method
-and interval distance metric. Optionally performs permutation tests for
-statistical significance.
+Computes the adjudicated quality and behavior indices for each combination
+of DR method and interval dissimilarity, optionally with permutation
+inference. P-values use the finite-sample Monte Carlo estimator
+\code{(c + 1) / (m + 1)} throughout. When \code{perm_test = TRUE},
+family-wise adjusted p-values are additionally computed by single-step
+Westfall-Young min-P resampling using the shared joint permutation draws;
+the multiplicity family is, per DR method and index family (T&C, MRRE,
+LCMC) at the fixed K, the set of \{quality, behavior\} tests across all
+requested metrics. Quality tests are one-sided (upper); behavior tests are
+two-sided.
 }
-\examples{
-\dontrun{
-data(cars_mm)
-x <- standardize(cars_mm)
-proj <- run_idr(x)
-result <- assess_quality(x, proj, K = 5, perm_test = TRUE)
-print(result)
-}
+\details{
+A center-only Euclidean baseline (\code{baseline = TRUE}) evaluates every
+projection with plain Euclidean distances between interval centers in both
+spaces, quantifying what interval-aware evaluation adds.
 }

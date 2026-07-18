@@ -41,8 +41,9 @@ Int-UMAP) to an \code{interval_data} object and returns the projections.
 }
 \examples{
 \dontrun{
-data(cars_mm)
-x <- standardize(cars_mm)
+C <- matrix(rnorm(80), 20, 4)
+R <- matrix(runif(80, 0.05, 0.25), 20, 4)
+x <- standardize(interval_data(C, R))
 proj <- run_idr(x)
 }
 }

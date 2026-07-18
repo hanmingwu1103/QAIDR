@@ -1,0 +1,27 @@
+{
+  "name": "face_k_profiles",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/face.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 00:09:27 +0800",
+  "elapsed_sec": 13.2308,
+  "max_gc_mb": 449.9,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "82760c962791d9bcf9580480493c8afd3e5bf0991aaff07a75cc764049042ec6",
+    "rds": "8390baf061b3bc859af99532c843c56dfa23740e11ee81145ba65cf99c07105e"
+  },
+  "seeds": {},
+  "extra": []
+}

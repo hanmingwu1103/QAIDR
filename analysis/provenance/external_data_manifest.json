@@ -1,0 +1,9 @@
+{
+  "package": "dataSDA",
+  "version": "0.2.6",
+  "objects": {
+    "face.iGAP": "4794c64a7c026c75d521adacfe2c8ba5b44788726dd66e8a3f87ea7c6280138e",
+    "cars.int": "a77f2ca2e24512edfcf735f536084be9649ed0e470027b8866f5ddd7c0835861"
+  },
+  "note": "SHA-256 digests use digest serialization; manuscript analysis uses face.iGAP."
+}

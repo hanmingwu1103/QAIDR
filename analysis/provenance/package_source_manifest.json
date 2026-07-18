@@ -1,0 +1,20 @@
+{
+  "package": "QAIDR",
+  "version": "0.2.0",
+  "created": "2026-07-16 22:01:02 +0800",
+  "files": {
+    "Rcode-QAIDR/QAIDR/DESCRIPTION": "5d4618eae64787cc9133e56fbfa3aa3479ef4b1a4f2f9a7d7f65321494a1ebad",
+    "Rcode-QAIDR/QAIDR/NAMESPACE": "3bca9387752835febc593088d12840d20db111032fb0103f902b81e0ffe1d152",
+    "Rcode-QAIDR/QAIDR/R/assessment.R": "ee0e755c2c337e0b950da65d78e6f871db829d37c2506031338d232a3a583ca6",
+    "Rcode-QAIDR/QAIDR/R/coranking.R": "8a694f0517757813e10e63dde3ebfd6e7622c89337863a988d6daaff476278ce",
+    "Rcode-QAIDR/QAIDR/R/data.R": "4d88bba5bb876cbc91af3da42ecad7a9a0572492e406af31d11af2f6814ce28d",
+    "Rcode-QAIDR/QAIDR/R/distances.R": "daa5fa3eacabdd39eaa3984327f8bd08d0cbb2ffa46de10cba9c5a061a5888a8",
+    "Rcode-QAIDR/QAIDR/R/dr-methods.R": "22bc70627486fb611e735e10f606ee0a4b251fcb23685d0a356fae66b564d6ea",
+    "Rcode-QAIDR/QAIDR/R/interval-data.R": "5b3c9d86d880c1281898c84dcfdc329bd1dc4b71362c30e74c5878200770177b",
+    "Rcode-QAIDR/QAIDR/R/plotting.R": "51731dcdaea7e5a1007e07601a3b5570e4401de5dd4ee8291defb1e8f577df9a",
+    "Rcode-QAIDR/QAIDR/R/QAIDR-package.R": "8689b58e9d0f588b29c4c0d04a5d92e9293b72d950ff43f7b3fdbe4d7d22dacc",
+    "Rcode-QAIDR/QAIDR/R/simulation.R": "7527394b66cf26f2418c9ff249a331b5bf20c1191ae4fc085bf06d01ada16353",
+    "Rcode-QAIDR/QAIDR/R/utils-convert.R": "e35ca19385516bf9cd39b5b1e8be0b5636805482c664c24842faf021ef97ed4b",
+    "Rcode-QAIDR/QAIDR/R/utils-format.R": "53bdc5f9aeacc57760a64b4cd4bf46841acdddf47ba6886444278a4b1c9d8c79"
+  }
+}
