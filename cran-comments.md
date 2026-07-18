@@ -2,7 +2,7 @@
 
 * Windows 11 x64, R 4.6.1
 * GitHub Actions: R release on macOS, Ubuntu, and Windows; R devel and oldrel
-  on Ubuntu (to be confirmed for the release commit)
+  on Ubuntu (all passed for release commit fcdcef1)
 
 ## R CMD check results
 
