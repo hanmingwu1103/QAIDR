@@ -1,0 +1,31 @@
+{
+  "name": "midscale_pvalues_minP",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/e_apply_d3_ushcn.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 19:04:18 +0800",
+  "elapsed_sec": 314.6377,
+  "max_gc_mb": 1334.7,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "1b0aeb813682c829b44bd8bfec7807f550a636f6606795f78f6757213a1533a5",
+    "rds": "5006a5dc0024b8377f9db76e3eef24008304075e992a27cf03280623292f04a7"
+  },
+  "seeds": {},
+  "extra": {
+    "K": 10,
+    "m": 999,
+    "provenance": "Prompt E D3(b) 2026-07-17: corrected tolerance-block tie randomization (rank_matrix patch); production call and seeds otherwise identical; supersedes the 2026-07-16 artifacts computed under the defective near-tie randomization"
+  }
+}

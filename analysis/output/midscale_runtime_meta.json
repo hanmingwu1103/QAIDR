@@ -1,0 +1,31 @@
+{
+  "name": "midscale_runtime",
+  "run_mode": "full",
+  "created": "2026-07-16 10:34:32 +0800",
+  "elapsed_sec": 566.1497,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": [
+    "0.2.0",
+    "0.6.2",
+    "3.2.5",
+    "0.2.10.0",
+    "0.2.5"
+  ],
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/midscale_ghcn.R": "7bb803ce28b284379fee265fe986c09a072dbeb9a686be26dec0d9794ca4f8f4",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/analysis/data-processed/ghcn_seasonal_intervals.rds": "eb0ff59a7a9f72ec07d371c426688d098c7e5710cfc7169b517b869d3367d33a",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/ghcnd_hcn.tar.gz": "f21b14ed2391be0a3da038cb908df0412ef5fde554dd8f7f4dbcc5c9be8b38dc",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76"
+  },
+  "extra": {
+    "n": 645,
+    "p": 4
+  },
+  "provenance_status": "backfilled",
+  "output_hashes": {
+    "csv": "3209fca102f7309b5b03fd06a3c3b47fe70ff2fee8e11a0cc5048a474d1d6cdb",
+    "rds": "f09d825aae051fec5c1a9087dc66544d07e49303de097be9e11cd2eb9851317b"
+  }
+}

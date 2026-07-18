@@ -9,3 +9,7 @@
 ^docs$
 ^_build_site\.R$
 ^pkgdown$
+^analysis$
+^README_REPRODUCIBILITY\.md$
+^cran-comments\.md$
+^\.gitattributes$

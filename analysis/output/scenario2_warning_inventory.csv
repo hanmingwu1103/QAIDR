@@ -1,0 +1,2 @@
+"stage","class","message","count"
+"run_idr","benign, documented: umap spectral initialization failed (disconnected/low-connectivity kNN graph at n=800); the umap package falls back to a random initial embedding; run is seeded so results are reproducible; affects Int-UMAP only","failed creating initial embedding; using random embedding instead",2

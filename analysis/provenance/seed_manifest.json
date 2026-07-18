@@ -1,0 +1,14 @@
+{
+  "SEED_BASE": 20260715,
+  "rules": {
+    "scenario1": "data SEED_BASE+1000+r; DR +500000; tie audits +r or tie_seed=seed_r; calibration permutations +900000",
+    "scenario2": "data SEED_BASE+2000+r; DR raw +500000, std +600000; calibration +900000",
+    "scenario3": "data SEED_BASE+3000+d; DR +500000; perturbation +700000+pert",
+    "face": "DR SEED_BASE+4000; inference +4001",
+    "benchmark": "per size SEED_BASE+5000+n",
+    "ushcn": "DR SEED_BASE+6000; inference +6001",
+    "scenario4": "data SEED_BASE+7000+r; DR +500000; tie resolutions +300000+s; calibration +900000",
+    "cpca_isotropic_null": "SEED_BASE+7900+r",
+    "stage4_gate_v2": "data SEED_BASE+20/+1; null embeddings +5e6+r; permutations +6e6+r"
+  }
+}

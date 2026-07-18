@@ -60,6 +60,58 @@ test_that("interval_data_from_array works", {
   expect_equal(x$radii[1, 1], 0.5)
 })
 
+test_that("interval_data_from_dataSDA parses lower-upper character columns", {
+  d <- data.frame(
+    A = c("1,2", "3,5"),
+    B = c("10.0,12.0", "20.0,25.0"),
+    group = c("g1", "g2"),
+    row.names = c("one", "two")
+  )
+  x <- interval_data_from_dataSDA(d, label_col = "group")
+
+  expect_s3_class(x, "interval_data")
+  expect_equal(x$centers, structure(matrix(c(1.5, 4, 11, 22.5), 2, 2),
+                                    dimnames = list(c("one", "two"),
+                                                    c("A", "B"))))
+  expect_equal(x$radii, structure(matrix(c(0.5, 1, 1, 2.5), 2, 2),
+                                  dimnames = list(c("one", "two"),
+                                                  c("A", "B"))))
+  expect_equal(as.character(x$labels), c("g1", "g2"))
+})
+
+test_that("interval_data_from_dataSDA converts the CRAN example data", {
+  skip_if_not_installed("dataSDA")
+
+  utils::data("cars.int", package = "dataSDA", envir = environment())
+  cars <- interval_data_from_dataSDA(cars.int)
+  expect_equal(dim(cars$centers), c(27L, 4L))
+  expect_equal(rownames(cars$centers)[1], "Alfa145")
+  expect_equal(as.character(cars$labels)[1:3],
+               c("Utilitarian", "Berlina", "Sportive"))
+  expect_equal(cars$centers[1, "Acceleration"], 9.75)
+
+  utils::data("face.iGAP", package = "dataSDA", envir = environment())
+  person <- sub("[[:digit:]]+$", "", rownames(face.iGAP))
+  face <- interval_data_from_dataSDA(face.iGAP, labels = person)
+  expect_equal(dim(face$centers), c(27L, 6L))
+  expect_equal(face$centers["FRA1", "AD"], 156)
+  expect_equal(face$radii["FRA1", "BC"], 1.505)
+  expect_equal(levels(face$labels),
+               c("FRA", "HUS", "INC", "ISA", "JPL", "KHA", "LOT",
+                 "PHI", "ROM"))
+})
+
+test_that("interval_data_from_dataSDA validates ambiguous inputs", {
+  d <- data.frame(A = c("1,2", "3,4"), group = c("a", "b"))
+  expect_error(interval_data_from_dataSDA(d, label_col = "group",
+                                          labels = c("a", "b")),
+               "either")
+  expect_error(interval_data_from_dataSDA(data.frame(x = 1:2)),
+               "No dataSDA interval")
+  expect_error(interval_data_from_dataSDA(
+    data.frame(A = c("2,1", "3,4"))), "lower <= upper", fixed = TRUE)
+})
+
 test_that("standardize works correctly", {
   set.seed(42)
   C <- matrix(c(10, 20, 30, 100, 200, 300), nrow = 3)

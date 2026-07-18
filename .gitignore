@@ -7,3 +7,7 @@ inst/doc
 *.tar.gz
 .claude/
 docs/
+/Rplots.pdf
+/analysis/data-raw/ghcnd/
+/analysis/output/logs/
+/analysis/output/*_QUICK.*

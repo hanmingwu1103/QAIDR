@@ -1,0 +1,34 @@
+{
+  "name": "scenario2_warning_inventory",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/scenario2_warning_diagnostic.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-16 15:12:26 +0800",
+  "elapsed_sec": 1188.0124,
+  "max_gc_mb": 809.9,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenario2_warning_diagnostic.R": "322c62d2403620df90e12dab1155325d81b2bc4ffb8bd1d37b653695b88cf648",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76"
+  },
+  "output_hashes": {
+    "csv": "0bed408a50f72297d192531618764eeea55da51c0fbfa9c99c42b5946aa9f091",
+    "rds": "6fe0f8cc6b17132b64edc03b5799b04bbad37c23fb72bdb5e2d4b2fb4753f24c"
+  },
+  "seeds": {},
+  "extra": {
+    "n_reps": 2,
+    "n_warnings": 2,
+    "unclassified": 0
+  }
+}

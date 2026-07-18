@@ -1,0 +1,27 @@
+{
+  "name": "b2_sensitivity_endpoint_audit",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/b2_sensitivity.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 14:32:22 +0800",
+  "elapsed_sec": 968.3732,
+  "max_gc_mb": 450.2,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "fac0c76e699df0ee1b89a3f4856e79c1c060cbd28d9237e14c35e1a4e1280b51",
+    "rds": "85d420f306f0d71019ece6a52a027f0245c3501d3847c506b06810580549a1bb"
+  },
+  "seeds": {},
+  "extra": []
+}

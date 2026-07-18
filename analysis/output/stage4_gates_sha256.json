@@ -1,0 +1,6 @@
+{
+  "file": "stage4_gates.json",
+  "sha256": "4fb270fbe2e8925abfd741c587b4f436e78035d66f4a3fc7a11b062f192dfdd2",
+  "provenance_status": "backfilled",
+  "note": "Sidecar added 2026-07-17 with the Prompt C quick-runner fix; hash computed from the existing gate file, which was produced by stage4_gate2.R on its original run and validated overall_pass=TRUE at that time. Future stage4_gate2.R runs write this sidecar contemporaneously."
+}

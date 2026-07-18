@@ -1,0 +1,28 @@
+{
+  "name": "scenario2_factorial_summary",
+  "run_mode": "full",
+  "created": "2026-07-15 23:03:19 +0800",
+  "elapsed_sec": 73816.9053,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": [
+    "0.2.0",
+    "0.6.2",
+    "3.2.5",
+    "0.2.10.0",
+    "0.2.5"
+  ],
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenario2.R": "5ff4dbb68442b0def14dbde31cc0dbcf8e29cecb63dd1d9667f59879cfcac47f",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76"
+  },
+  "extra": {
+    "n_fact": 25
+  },
+  "provenance_status": "backfilled",
+  "output_hashes": {
+    "csv": "9a6ec17abd48a4b97b7ad5378e00be36072ebfff9fbe763c167a45abb30ba37d",
+    "rds": "18fae4dd9503db4268428299888fb661f6bc3dc43bad6795fefae8a0a1328bf1"
+  }
+}

@@ -2,33 +2,39 @@
 % Please edit documentation in R/coranking.R
 \name{coranking_indices}
 \alias{coranking_indices}
-\title{Compute co-ranking quality and behavior indices}
+\title{Compute co-ranking quality and behavior indices from distance matrices}
 \usage{
-coranking_indices(Dh, Dl, K)
+coranking_indices(Dh, Dl, K, ties = c("error", "random"), tol = 1e-12)
 }
 \arguments{
-\item{Dh}{Numeric matrix of high-dimensional pairwise distances (n x n).}
+\item{Dh}{Numeric matrix of high-dimensional pairwise dissimilarities.}
 
-\item{Dl}{Numeric matrix of low-dimensional pairwise distances (n x n).}
+\item{Dl}{Numeric matrix of low-dimensional pairwise dissimilarities.}
 
 \item{K}{Integer neighborhood size.}
+
+\item{ties}{Character, one of \code{"error"} (primary) or \code{"random"}
+(documented fallback).}
+
+\item{tol}{Numeric relative tolerance used for tie detection (default
+\code{1e-12}): two consecutive sorted distances are a tie when their gap
+is at most \code{tol} times the larger of the two. The default catches
+structural ties (duplicate objects, coincident interval geometry) while
+ignoring floating-point near-misses between genuinely distinct
+distances.}
 }
 \value{
-A named numeric vector with elements \code{Q_TC}, \code{B_TC},
-\code{Q_RE}, \code{B_RE}, \code{Q_LC}, \code{B_LC}.
+Named numeric vector \code{Q_TC, B_TC, Q_RE, B_RE, Q_LC, B_LC},
+with the co-ranking matrix attached as attribute \code{"Q"} and the tie
+counts as attribute \code{"n_ties"}.
 }
 \description{
-Given high-dimensional and low-dimensional distance matrices, computes
-quality (Q) and behavior (B) indices based on the co-ranking matrix
-framework. Three index families are computed: Trustworthiness & Continuity
-(T&C), Mean Relative Rank Errors (MRRE), and Local Continuity Meta-Criterion
-(LCMC).
+Convenience wrapper: ranks both distance matrices (self-excluded,
+tie-checked), forms the co-ranking matrix, and evaluates the six indices.
 }
 \examples{
 set.seed(42)
 X <- matrix(rnorm(50), 10, 5)
 Y <- matrix(rnorm(20), 10, 2)
-Dh <- as.matrix(dist(X))
-Dl <- as.matrix(dist(Y))
-coranking_indices(Dh, Dl, K = 3)
+coranking_indices(as.matrix(dist(X)), as.matrix(dist(Y)), K = 3)
 }

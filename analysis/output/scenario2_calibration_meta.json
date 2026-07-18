@@ -1,0 +1,31 @@
+{
+  "name": "scenario2_calibration",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/e_apply_d4_s2.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 23:22:02 +0800",
+  "elapsed_sec": 7334.965,
+  "max_gc_mb": 813.4,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "3436b3ea5873f765f6f6dc91b2ce9e80aafa23bb66365cf6568d2a50e3b83ea6",
+    "rds": "c77813bbc3583af47c5e12703b7218c582d2cff6783bf307a772d87a7e7ec5d4"
+  },
+  "seeds": {},
+  "extra": {
+    "m": 999,
+    "n_cal": 25,
+    "provenance": "Prompt E D4(b) 2026-07-17: corrected tolerance-block tie randomization (rank_matrix patch); production call and seeds otherwise identical; supersedes the 2026-07-16 artifact computed under the defective near-tie randomization"
+  }
+}

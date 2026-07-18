@@ -1,0 +1,13 @@
+"arm","par","Method","n_internal_keys","n_boundary_values","n_tangency_keys","n_persistent_comparisons","range_convention","max_range_all_pts_minus_published","tol_root","tol_disc"
+"Face","lambda","C-PCA",3134,1,0,0,"open-cell midpoints + nonexceptional endpoints",0.0493333333333333,1e-10,2.8421709430404e-14
+"Face","lambda","V-PCA",3105,1,0,0,"open-cell midpoints + nonexceptional endpoints",0.0410370370370371,1e-10,2.8421709430404e-14
+"Face","lambda","MR-PCA",3209,1,0,0,"open-cell midpoints + nonexceptional endpoints",0.00407338735521678,1e-10,2.8421709430404e-14
+"Face","lambda","SPCA",3134,1,0,0,"open-cell midpoints + nonexceptional endpoints",0.0493333333333333,1e-10,2.8421709430404e-14
+"Face","lambda","IMDS",4077,1,0,0,"open-cell midpoints + nonexceptional endpoints",0.0177777777777778,1e-10,2.8421709430404e-14
+"Face","lambda","Int-UMAP",3432,1,0,0,"open-cell midpoints + nonexceptional endpoints",0.172592592592593,1e-10,2.8421709430404e-14
+"Face","nu","C-PCA",1427,0,0,0,"open-cell midpoints + nonexceptional endpoints",0,1e-10,2.8421709430404e-14
+"Face","nu","V-PCA",1417,0,0,0,"open-cell midpoints + nonexceptional endpoints",0,1e-10,2.8421709430404e-14
+"Face","nu","MR-PCA",1572,1,0,0,"open-cell midpoints + nonexceptional endpoints",0.000794877077324507,1e-10,2.8421709430404e-14
+"Face","nu","SPCA",1427,0,0,0,"open-cell midpoints + nonexceptional endpoints",0,1e-10,2.8421709430404e-14
+"Face","nu","IMDS",1234,0,0,0,"open-cell midpoints + nonexceptional endpoints",0,1e-10,2.8421709430404e-14
+"Face","nu","Int-UMAP",1993,0,0,0,"open-cell midpoints + nonexceptional endpoints",0,1e-10,2.8421709430404e-14

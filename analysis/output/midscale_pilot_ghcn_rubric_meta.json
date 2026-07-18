@@ -1,0 +1,32 @@
+{
+  "name": "midscale_pilot_ghcn_rubric",
+  "run_mode": "full",
+  "created": "2026-07-15 09:01:24 +0800",
+  "elapsed_sec": 53.8264,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": [
+    "0.2.0",
+    "0.6.2",
+    "3.2.5",
+    "0.2.10.0",
+    "0.2.5"
+  ],
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/midscale_pilot_ghcn.R": "19f6ed11b83943411e07748b7ee432af3d62a435f37f5c81ae2b25ab89841c59",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/ghcnd_hcn.tar.gz": "f21b14ed2391be0a3da038cb908df0412ef5fde554dd8f7f4dbcc5c9be8b38dc",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/ghcnd-stations.txt": "fedc8bbe92f9b1eee0a57f8886e5e022965a542efa60710c01b47a838120b18d",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/ghcnd-version.txt": "ad234b11acb12d474f083562b2900fb74ce9305a533e5b035e214a686b3ead0a",
+    "Rcode-QAIDR/QAIDR/analysis/data-raw/ghcnd/readme.txt": "3a71ae355252a6693a56a473ed7182b500ae7816c2cb2b2ce708c1e9ea9dcfde",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76"
+  },
+  "extra": {
+    "n_final": 645,
+    "target_year": 2023
+  },
+  "provenance_status": "backfilled",
+  "output_hashes": {
+    "csv": "a3ec608d346fa0a0a75128a3d939c9da3bfba6e508d8cf7707cc06b89915811a",
+    "rds": "2d2759ded3fb583974a0087449482e68dd238f36fbd07ef5a035a8caf6d38144"
+  }
+}

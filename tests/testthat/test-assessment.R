@@ -1,111 +1,110 @@
-test_that("assess_quality returns qaidr_assessment object", {
-  set.seed(42)
-  C <- matrix(rnorm(50), 10, 5)
-  R <- matrix(runif(50, 0, 0.5), 10, 5)
-  x <- interval_data(C, R)
+# Tests for assessment, permutation inference, and multiplicity adjustment
+# (Phase B, Stage 2).
 
-  # Create mock projections
-  proj <- structure(
-    list(
-      "mock" = list(
-        C = matrix(rnorm(20), 10, 2),
-        R = matrix(0, 10, 2),
-        type = "Point"
-      )
-    ),
-    class = "idr_projections"
-  )
+mk_interval <- function(n = 12, p = 4, seed = 42) {
+  set.seed(seed)
+  interval_data(matrix(rnorm(n * p), n, p),
+                matrix(runif(n * p, 0.05, 0.5), n, p))
+}
 
-  result <- assess_quality(x, proj, K = 3,
-                           metrics = "Wasserstein", perm_test = FALSE)
+mk_proj <- function(n = 12, d = 2, seed = 43, type = "Point") {
+  set.seed(seed)
+  structure(list(mock = list(C = matrix(rnorm(n * d), n, d),
+                             R = matrix(if (type == "Point") 0 else runif(n * d, 0.05, 0.3), n, d),
+                             type = type)),
+            class = "idr_projections")
+}
 
-  expect_s3_class(result, "qaidr_assessment")
-  expect_true(is.data.frame(result$results))
-  expect_equal(nrow(result$results), 1)
-  expect_null(result$pvalues)
+test_that("assess_quality returns results incl. the center-only baseline row", {
+  x <- mk_interval()
+  res <- assess_quality(x, mk_proj(), K = 3, metrics = "Wasserstein",
+                        baseline = TRUE)
+  expect_s3_class(res, "qaidr_assessment")
+  expect_setequal(res$results$Metric, c("Wasserstein", "Centers-Euclidean"))
+  expect_null(res$pvalues)
 })
 
-test_that("assess_quality with perm_test returns pvalues", {
-  set.seed(42)
-  C <- matrix(rnorm(50), 10, 5)
-  R <- matrix(runif(50, 0, 0.5), 10, 5)
-  x <- interval_data(C, R)
-
-  proj <- structure(
-    list(
-      "mock" = list(
-        C = matrix(rnorm(20), 10, 2),
-        R = matrix(0, 10, 2),
-        type = "Point"
-      )
-    ),
-    class = "idr_projections"
-  )
-
-  result <- assess_quality(x, proj, K = 3,
-                           metrics = "Wasserstein",
-                           perm_test = TRUE, n_perm = 19)
-
-  expect_s3_class(result, "qaidr_assessment")
-  expect_true(is.data.frame(result$pvalues))
-  expect_equal(nrow(result$pvalues), 1)
+test_that("assess_quality baseline can be disabled", {
+  x <- mk_interval()
+  res <- assess_quality(x, mk_proj(), K = 3, metrics = "Wasserstein",
+                        baseline = FALSE)
+  expect_equal(res$results$Metric, "Wasserstein")
 })
 
-test_that("perm_test returns correct structure", {
-  set.seed(42)
-  Dh <- as.matrix(dist(matrix(rnorm(50), 10, 5)))
-  Dl <- as.matrix(dist(matrix(rnorm(20), 10, 2)))
+test_that("permutation p-values respect the 1/(m+1) floor and agree across entry points", {
+  x <- mk_interval(n = 14)
+  proj <- mk_proj(n = 14)
+  m <- 39
+  res <- assess_quality(x, proj, K = 3, metrics = "Wasserstein",
+                        baseline = FALSE, perm_test = TRUE, n_perm = m,
+                        seed = 202)
+  p_all <- unlist(res$pvalues[, c("Q_TC", "B_TC", "Q_RE", "B_RE", "Q_LC", "B_LC")])
+  expect_true(all(p_all >= 1 / (m + 1) - 1e-12))
+  expect_true(all(p_all <= 1))
+  padj <- unlist(res$pvalues_adj[, c("Q_TC", "B_TC", "Q_RE", "B_RE", "Q_LC", "B_LC")])
+  # single-step min-P adjustment can only increase p-values
+  expect_true(all(padj >= p_all - 1e-12))
 
-  pt <- perm_test(Dh, Dl, K = 3, n_perm = 19)
-
-  expect_type(pt, "list")
-  expect_named(pt, c("vals", "pQ", "pB"))
-  expect_length(pt$vals, 6)
-  expect_length(pt$pQ, 3)
-  expect_length(pt$pB, 3)
-  # P-values in [0, 1]
-  expect_true(all(pt$pQ >= 0 & pt$pQ <= 1))
-  expect_true(all(pt$pB >= 0 & pt$pB <= 1))
+  # perm_test and assess_quality share the engine: same seeded stream, same p
+  Dh <- idist(x$centers, x$radii, "Wasserstein")
+  Dl <- as.matrix(dist(proj$mock$C))
+  pt <- perm_test(Dh, Dl, K = 3, n_perm = m, seed = 202)
+  expect_equal(unname(pt$pQ["TC"]), res$pvalues$Q_TC[1], tolerance = 1e-12)
+  expect_equal(unname(pt$pB["LC"]), res$pvalues$B_LC[1], tolerance = 1e-12)
 })
 
-test_that("k_profiles returns correct data frame", {
-  set.seed(42)
-  C <- matrix(rnorm(50), 10, 5)
-  R <- matrix(runif(50, 0, 0.5), 10, 5)
-  x <- interval_data(C, R)
+test_that("identity projection yields the minimal attainable p-value", {
+  # Perfect correspondence: observed Q indices are at the maximum, so
+  # p must be exactly 1/(m+1) for the quality indices.
+  set.seed(77)
+  n <- 15
+  C <- matrix(rnorm(n * 2), n, 2)
+  x <- interval_data(cbind(C, C), matrix(0.0, n, 4) + 1e-6)
+  proj <- structure(list(ident = list(C = C, R = matrix(1e-6, n, 2),
+                                      type = "Interval")),
+                    class = "idr_projections")
+  m <- 19
+  res <- assess_quality(x, proj, K = 3, metrics = "Wasserstein",
+                        baseline = FALSE, perm_test = TRUE, n_perm = m,
+                        seed = 5)
+  expect_equal(res$pvalues$Q_LC[1], 1 / (m + 1), tolerance = 1e-12)
+})
 
-  proj <- structure(
-    list(
-      "mock" = list(
-        C = matrix(rnorm(20), 10, 2),
-        R = matrix(0, 10, 2),
-        type = "Point"
-      )
-    ),
-    class = "idr_projections"
-  )
+test_that("lambda and nu are honored end-to-end", {
+  x <- mk_interval(n = 10)
+  D1 <- idist(x$centers, x$radii, "Int-Euclidean", lambda = 0)
+  D2 <- idist(x$centers, x$radii, "Int-Euclidean", lambda = 1)
+  expect_false(isTRUE(all.equal(D1, D2)))
+  D3 <- idist(x$centers, x$radii, "Ichino-Yaguchi", nu = 0)
+  D4 <- idist(x$centers, x$radii, "Ichino-Yaguchi", nu = 0.5)
+  expect_false(isTRUE(all.equal(D3, D4)))
+  expect_error(idist(x$centers, x$radii, "Int-Euclidean", lambda = 2))
+  # canonical IY range is [0, 0.5]; values above it are rejected
+  expect_error(idist(x$centers, x$radii, "Ichino-Yaguchi", nu = 0.75))
+  # boundary values work
+  expect_silent(idist(x$centers, x$radii, "Int-Euclidean", lambda = 0))
+  expect_silent(idist(x$centers, x$radii, "Ichino-Yaguchi", nu = 0.5))
+})
 
-  profiles <- k_profiles(x, proj, K_max = 3, metrics = "Wasserstein")
-
+test_that("k_profiles evaluates all K on one co-ranking matrix", {
+  x <- mk_interval()
+  profiles <- k_profiles(x, mk_proj(), K_max = 4, metrics = "Wasserstein",
+                         baseline = FALSE)
   expect_true(is.data.frame(profiles))
-  expect_equal(nrow(profiles), 3)  # K_max = 3 * 1 method * 1 metric
-  expect_true(all(c("Method", "Metric", "K", "Q_TC", "B_TC") %in% names(profiles)))
+  expect_equal(nrow(profiles), 4)
+  expect_true(all(c("Method", "Metric", "K", "Q_TC", "B_LC") %in% names(profiles)))
+  # K = N-2 upper bound enforced
+  expect_error(k_profiles(x, mk_proj(), K_max = 11, metrics = "Wasserstein"),
+               "K")
 })
 
-test_that("print.qaidr_assessment works", {
-  result <- structure(
-    list(
-      results = data.frame(
-        IDR = "test", Metric = "Wasserstein",
-        Q_TC = 0.5, B_TC = 0.1,
-        Q_RE = 0.6, B_RE = -0.1,
-        Q_LC = 0.7, B_LC = 0.05
-      ),
-      pvalues = NULL,
-      K = 5
-    ),
-    class = "qaidr_assessment"
-  )
-
-  expect_output(print(result), "QAIDR Assessment")
+test_that("print.qaidr_assessment works with and without p-values", {
+  x <- mk_interval()
+  res <- assess_quality(x, mk_proj(), K = 3, metrics = "Wasserstein",
+                        baseline = FALSE)
+  expect_output(print(res), "QAIDR Assessment")
+  res2 <- assess_quality(x, mk_proj(), K = 3, metrics = "Wasserstein",
+                         baseline = FALSE, perm_test = TRUE, n_perm = 19,
+                         seed = 1)
+  expect_output(print(res2), "min-P")
 })

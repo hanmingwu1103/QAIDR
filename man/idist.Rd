@@ -4,7 +4,7 @@
 \alias{idist}
 \title{Compute interval distance matrix}
 \usage{
-idist(centers, radii = NULL, metric = "Wasserstein")
+idist(centers, radii = NULL, metric = "Wasserstein", lambda = 0.5, nu = 0.5)
 }
 \arguments{
 \item{centers}{Numeric matrix of interval midpoints (n x p), or an
@@ -15,6 +15,12 @@ idist(centers, radii = NULL, metric = "Wasserstein")
 
 \item{metric}{Character string: one of \code{"Int-Euclidean"},
 \code{"Hausdorff"}, \code{"Ichino-Yaguchi"}, or \code{"Wasserstein"}.}
+
+\item{lambda}{Optimism index in \eqn{[0, 1]} for the Interval Euclidean
+scalarization (default 0.5); ignored by the other dissimilarities.}
+
+\item{nu}{Span weight for the Ichino-Yaguchi dissimilarity, canonical
+range \eqn{[0, 0.5]} (default 0.5); ignored by the other dissimilarities.}
 }
 \value{
 A symmetric n x n distance matrix.

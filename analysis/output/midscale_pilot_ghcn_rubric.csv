@@ -1,0 +1,6 @@
+"criterion","value"
+"availability","official NOAA, public domain, versioned; hashes recorded"
+"completeness","645/1218 stations pass 90% joint rule (year 2023)"
+"scale","n = 645 (target 1000-3000)"
+"widths","0.000% degenerate season-cells pre-filter"
+"runtime","projected from benchmark: n~1200, p=4 within envelope"

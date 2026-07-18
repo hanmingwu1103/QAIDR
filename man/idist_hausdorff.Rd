@@ -2,7 +2,7 @@
 % Please edit documentation in R/distances.R
 \name{idist_hausdorff}
 \alias{idist_hausdorff}
-\title{Hausdorff distance for intervals}
+\title{Product-Hausdorff distance for intervals}
 \usage{
 idist_hausdorff(centers, radii)
 }
@@ -15,8 +15,12 @@ idist_hausdorff(centers, radii)
 A symmetric n x n distance matrix.
 }
 \description{
-Computes the L2-Hausdorff distance between interval-valued observations
-represented as hyperrectangles.
+Computes the coordinatewise product-Hausdorff dissimilarity between
+interval-valued observations: the interval Hausdorff distance is taken
+per coordinate and aggregated in \eqn{\ell_2}. This is the manuscript's
+product-Hausdorff form; it is generally NOT the set-Hausdorff metric
+between hyperrectangles under the Euclidean point metric. The public
+metric key \code{"Hausdorff"} is unchanged.
 }
 \examples{
 C <- matrix(rnorm(12), 4, 3)

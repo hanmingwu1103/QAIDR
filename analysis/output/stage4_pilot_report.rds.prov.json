@@ -1,0 +1,13 @@
+{
+  "name": "stage4_pilot_report.rds",
+  "provenance_status": "backfilled",
+  "created": "2026-07-16 22:01:15 +0800",
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/stage4_pilot.R": "ee6a75a5918ccbd57b6d70937e0a6d0a98342b3ad5a89ab305c4b893e3ac7439",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23"
+  },
+  "output_hashes": {
+    "file": "0be7e5cb0ba4cd356d893be3e424385dd5884eb42100031a2f5f8e9aca6c3117"
+  },
+  "note": "sidecar added by b2_provenance_backfill.R"
+}

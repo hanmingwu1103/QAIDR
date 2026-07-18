@@ -1,0 +1,27 @@
+{
+  "name": "b2_sensitivity_exceptional_summary",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/b2_sensitivity.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 14:32:21 +0800",
+  "elapsed_sec": 968.0708,
+  "max_gc_mb": 450.2,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "9fe0bb171e60005db1966854fb8a0284dc4bed39a1b1f125ee3609a0855e593b",
+    "rds": "9e45474f6eeb174ae4162a8a5f4cd899a7bb2c0a517124155c495ed4c5389e04"
+  },
+  "seeds": {},
+  "extra": []
+}

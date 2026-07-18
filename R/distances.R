@@ -6,7 +6,9 @@
 #'
 #' @param centers Numeric matrix of interval midpoints (n x p).
 #' @param radii Numeric matrix of interval half-widths (n x p).
-#' @param lambda Weight parameter in \eqn{[0, 1]} (default 0.5).
+#' @param lambda Weight parameter: one finite numeric scalar in \eqn{[0, 1]}
+#'   (default 0.5); validated here as well as in the \code{idist()}
+#'   dispatcher.
 #' @return A symmetric n x n distance matrix.
 #' @export
 #' @examples
@@ -14,6 +16,10 @@
 #' R <- matrix(runif(12, 0.1, 0.5), 4, 3)
 #' D <- idist_euclidean(C, R)
 idist_euclidean <- function(centers, radii, lambda = 0.5) {
+  if (!is.numeric(lambda) || length(lambda) != 1L || !is.finite(lambda) ||
+      lambda < 0 || lambda > 1) {
+    stop("idist_euclidean(): 'lambda' must be one finite numeric scalar in [0, 1]")
+  }
   centers <- as.matrix(centers)
   radii <- as.matrix(radii)
   N <- nrow(centers)
@@ -35,10 +41,14 @@ idist_euclidean <- function(centers, radii, lambda = 0.5) {
 }
 
 
-#' Hausdorff distance for intervals
+#' Product-Hausdorff distance for intervals
 #'
-#' Computes the L2-Hausdorff distance between interval-valued observations
-#' represented as hyperrectangles.
+#' Computes the coordinatewise product-Hausdorff dissimilarity between
+#' interval-valued observations: the interval Hausdorff distance is taken
+#' per coordinate and aggregated in \eqn{\ell_2}. This is the manuscript's
+#' product-Hausdorff form; it is generally NOT the set-Hausdorff metric
+#' between hyperrectangles under the Euclidean point metric. The public
+#' metric key \code{"Hausdorff"} is unchanged.
 #'
 #' @param centers Numeric matrix of interval midpoints (n x p).
 #' @param radii Numeric matrix of interval half-widths (n x p).
@@ -69,18 +79,25 @@ idist_hausdorff <- function(centers, radii) {
 #' Ichino-Yaguchi dissimilarity for intervals
 #'
 #' Computes the Ichino-Yaguchi dissimilarity between interval-valued
-#' observations based on intersection and union of intervals.
+#' observations based on the interval join (hull) and meet (intersection).
 #'
 #' @param centers Numeric matrix of interval midpoints (n x p).
 #' @param radii Numeric matrix of interval half-widths (n x p).
-#' @param gamma Weighting parameter (default 0.5).
+#' @param nu Span weight in the canonical Ichino-Yaguchi range \eqn{[0, 0.5]}
+#'   (default 0.5); named \eqn{\nu} in the manuscript.
+#' @param gamma Deprecated alias for \code{nu}.
 #' @return A symmetric n x n distance matrix.
 #' @export
 #' @examples
 #' C <- matrix(rnorm(12), 4, 3)
 #' R <- matrix(runif(12, 0.1, 0.5), 4, 3)
 #' D <- idist_ichino_yaguchi(C, R)
-idist_ichino_yaguchi <- function(centers, radii, gamma = 0.5) {
+idist_ichino_yaguchi <- function(centers, radii, nu = 0.5, gamma = NULL) {
+  if (!is.null(gamma)) {
+    warning("argument 'gamma' is deprecated; use 'nu'")
+    nu <- gamma
+  }
+  stopifnot(is.numeric(nu), length(nu) == 1, nu >= 0, nu <= 0.5)
   centers <- as.matrix(centers)
   radii <- as.matrix(radii)
   L <- centers - radii
@@ -104,7 +121,7 @@ idist_ichino_yaguchi <- function(centers, radii, gamma = 0.5) {
         len_A <- U[i, k] - L[i, k]
         len_B <- U[j, k] - L[j, k]
 
-        phi <- len_U - len_I + gamma * (2 * len_I - len_A - len_B)
+        phi <- len_U - len_I + nu * (2 * len_I - len_A - len_B)
         phi_sum <- phi_sum + phi^2
       }
       D[i, j] <- D[j, i] <- sqrt(phi_sum)
@@ -146,23 +163,29 @@ idist_wasserstein <- function(centers, radii) {
 #'   \code{centers} is an \code{interval_data} object.
 #' @param metric Character string: one of \code{"Int-Euclidean"},
 #'   \code{"Hausdorff"}, \code{"Ichino-Yaguchi"}, or \code{"Wasserstein"}.
+#' @param lambda Optimism index in \eqn{[0, 1]} for the Interval Euclidean
+#'   scalarization (default 0.5); ignored by the other dissimilarities.
+#' @param nu Span weight for the Ichino-Yaguchi dissimilarity, canonical
+#'   range \eqn{[0, 0.5]} (default 0.5); ignored by the other dissimilarities.
 #' @return A symmetric n x n distance matrix.
 #' @export
 #' @examples
 #' C <- matrix(rnorm(12), 4, 3)
 #' R <- matrix(runif(12, 0.1, 0.5), 4, 3)
 #' D <- idist(C, R, "Wasserstein")
-idist <- function(centers, radii = NULL, metric = "Wasserstein") {
+idist <- function(centers, radii = NULL, metric = "Wasserstein",
+                  lambda = 0.5, nu = 0.5) {
   if (inherits(centers, "interval_data")) {
     radii <- centers$radii
     centers <- centers$centers
   }
   stopifnot(!is.null(radii))
+  stopifnot(is.numeric(lambda), length(lambda) == 1, lambda >= 0, lambda <= 1)
 
   switch(metric,
-    "Int-Euclidean" = idist_euclidean(centers, radii),
+    "Int-Euclidean" = idist_euclidean(centers, radii, lambda = lambda),
     "Hausdorff" = idist_hausdorff(centers, radii),
-    "Ichino-Yaguchi" = idist_ichino_yaguchi(centers, radii),
+    "Ichino-Yaguchi" = idist_ichino_yaguchi(centers, radii, nu = nu),
     "Wasserstein" = idist_wasserstein(centers, radii),
     stop("Unknown metric: ", metric,
          ". Use one of: Int-Euclidean, Hausdorff, Ichino-Yaguchi, Wasserstein")

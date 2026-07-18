@@ -1,246 +1,308 @@
 #' Assess quality of interval DR projections
 #'
-#' Computes quality and behavior indices for each combination of DR method
-#' and interval distance metric. Optionally performs permutation tests for
-#' statistical significance.
+#' Computes the adjudicated quality and behavior indices for each combination
+#' of DR method and interval dissimilarity, optionally with permutation
+#' inference. P-values use the finite-sample Monte Carlo estimator
+#' \code{(c + 1) / (m + 1)} throughout. When \code{perm_test = TRUE},
+#' family-wise adjusted p-values are additionally computed by single-step
+#' Westfall-Young min-P resampling using the shared joint permutation draws;
+#' the multiplicity family is, per DR method and index family (T&C, MRRE,
+#' LCMC) at the fixed K, the set of \{quality, behavior\} tests across all
+#' requested metrics. Quality tests are one-sided (upper); behavior tests are
+#' two-sided.
 #'
-#' @param x An \code{interval_data} object (standardized).
-#' @param projections An \code{idr_projections} object from \code{run_idr()},
-#'   or a named list with the same structure.
+#' A center-only Euclidean baseline (\code{baseline = TRUE}) evaluates every
+#' projection with plain Euclidean distances between interval centers in both
+#' spaces, quantifying what interval-aware evaluation adds.
+#'
+#' @param x An \code{interval_data} object (standardized or raw; the caller
+#'   controls preprocessing).
+#' @param projections An \code{idr_projections} object from \code{run_idr()}.
 #' @param K Integer neighborhood size (default 5).
-#' @param metrics Character vector of distance metrics to evaluate.
-#' @param perm_test Logical; perform permutation tests (default \code{FALSE}).
-#' @param n_perm Integer number of permutations (default 1000).
-#' @return An object of class \code{qaidr_assessment} containing:
-#'   \describe{
-#'     \item{results}{Data frame with columns IDR, Metric, Q_TC, B_TC,
-#'       Q_RE, B_RE, Q_LC, B_LC.}
-#'     \item{pvalues}{Data frame of p-values (if \code{perm_test = TRUE}).}
-#'     \item{K}{The neighborhood size used.}
-#'   }
+#' @param metrics Character vector of interval dissimilarities.
+#' @param lambda Optimism index for the Interval Euclidean score (default 0.5).
+#' @param nu Ichino-Yaguchi span weight (default 0.5).
+#' @param baseline Logical; add the center-only Euclidean evaluation row
+#'   (default \code{TRUE}).
+#' @param perm_test Logical; perform permutation inference (default
+#'   \code{FALSE}).
+#' @param n_perm Integer number of permutations (default 999).
+#' @param ties Tie policy passed to \code{rank_matrix()} (\code{"error"} for
+#'   primary analyses).
+#' @param seed Optional integer seed for the permutation stream.
+#' @return A \code{qaidr_assessment} object: \code{results} (indices),
+#'   \code{pvalues} (unadjusted), \code{pvalues_adj} (min-P adjusted),
+#'   \code{null_draws} (joint permutation draws, for reproducible
+#'   multiplicity adjustment), \code{K}, \code{params}.
 #' @export
-#' @examples
-#' \dontrun{
-#' data(cars_mm)
-#' x <- standardize(cars_mm)
-#' proj <- run_idr(x)
-#' result <- assess_quality(x, proj, K = 5, perm_test = TRUE)
-#' print(result)
-#' }
 assess_quality <- function(x,
                            projections,
                            K = 5,
                            metrics = c("Int-Euclidean", "Hausdorff",
                                        "Ichino-Yaguchi", "Wasserstein"),
+                           lambda = 0.5,
+                           nu = 0.5,
+                           baseline = TRUE,
                            perm_test = FALSE,
-                           n_perm = 1000) {
+                           n_perm = 999,
+                           ties = c("error", "random"),
+                           seed = NULL) {
+  ties <- match.arg(ties)
+  stopifnot(inherits(x, "interval_data"))
+  if (!is.null(seed)) set.seed(seed)
 
-  if (inherits(x, "interval_data")) {
-    Centers <- x$centers
-    Radii <- x$radii
-  } else {
-    stop("x must be an interval_data object")
+  Centers <- x$centers
+  Radii <- x$radii
+  N_OBS <- nrow(Centers)
+  idx_names <- c("Q_TC", "B_TC", "Q_RE", "B_RE", "Q_LC", "B_LC")
+
+  eval_metrics <- metrics
+  if (baseline) eval_metrics <- c(eval_metrics, "Centers-Euclidean")
+
+  ## Pre-rank the high-dimensional space once per metric
+  Rh_list <- list()
+  for (met in eval_metrics) {
+    Dh <- if (met == "Centers-Euclidean") as.matrix(stats::dist(Centers))
+          else idist(Centers, Radii, met, lambda = lambda, nu = nu)
+    Rh_list[[met]] <- rank_matrix(Dh, ties = ties)
   }
 
-  N_OBS <- nrow(Centers)
   results <- data.frame()
   pvalues <- data.frame()
+  pvalues_adj <- data.frame()
+  null_draws <- list()
 
-  for (m in names(projections)) {
-    out <- projections[[m]]
-    for (met in metrics) {
-      Dh <- idist(Centers, Radii, met)
+  for (m_name in names(projections)) {
+    out <- projections[[m_name]]
+    obs_mat <- matrix(NA_real_, length(eval_metrics), 6,
+                      dimnames = list(eval_metrics, idx_names))
+    null_arr <- if (perm_test)
+      array(NA_real_, c(n_perm, length(eval_metrics), 6),
+            dimnames = list(NULL, eval_metrics, idx_names)) else NULL
+    ## Westfall-Young requirement: ONE set of joint permutation draws per
+    ## method, applied identically to every metric in the family, so the
+    ## min-P adjustment sees the true joint null dependence across metrics.
+    perms <- if (perm_test)
+      t(vapply(seq_len(n_perm), function(s) sample.int(N_OBS),
+               integer(N_OBS))) else NULL
 
-      Dl <- if (out$type == "Point") {
-        as.matrix(dist(out$C))
+    for (g in seq_along(eval_metrics)) {
+      met <- eval_metrics[g]
+      Dl <- if (met == "Centers-Euclidean" || out$type == "Point") {
+        as.matrix(stats::dist(out$C))
       } else {
-        idist(out$C, out$R, met)
+        idist(out$C, out$R, met, lambda = lambda, nu = nu)
       }
-
-      obs <- coranking_indices(Dh, Dl, K)
-
+      Rl <- rank_matrix(Dl, ties = ties)
+      Qm <- coranking_matrix(Rh_list[[met]], Rl)
+      obs_mat[g, ] <- indices_from_coranking(Qm, K)
       if (perm_test) {
-        cnt <- rep(0, 6)
-        for (i in seq_len(n_perm)) {
-          idx <- sample(N_OBS)
-          null_val <- coranking_indices(Dh, Dl[idx, idx], K)
-          cnt[1] <- cnt[1] + (null_val[1] >= obs[1])
-          cnt[2] <- cnt[2] + (abs(null_val[2]) >= abs(obs[2]))
-          cnt[3] <- cnt[3] + (null_val[3] >= obs[3])
-          cnt[4] <- cnt[4] + (abs(null_val[4]) >= abs(obs[4]))
-          cnt[5] <- cnt[5] + (null_val[5] >= obs[5])
-          cnt[6] <- cnt[6] + (abs(null_val[6]) >= abs(obs[6]))
-        }
-        p <- (cnt + 1) / (n_perm + 1)
-      } else {
-        p <- rep(NA_real_, 6)
+        null_arr[, g, ] <- perm_null_indices(Rh_list[[met]], Rl, K,
+                                             perms = perms)
       }
+    }
 
+    for (g in seq_along(eval_metrics)) {
       results <- rbind(results, data.frame(
-        IDR = m, Metric = met,
-        Q_TC = obs[1], B_TC = obs[2],
-        Q_RE = obs[3], B_RE = obs[4],
-        Q_LC = obs[5], B_LC = obs[6],
-        stringsAsFactors = FALSE
-      ))
+        IDR = m_name, Metric = eval_metrics[g], t(obs_mat[g, ]),
+        stringsAsFactors = FALSE))
+    }
 
-      pvalues <- rbind(pvalues, data.frame(
-        IDR = m, Metric = met,
-        p_Q_TC = p[1], p_B_TC = p[2],
-        p_Q_RE = p[3], p_B_RE = p[4],
-        p_Q_LC = p[5], p_B_LC = p[6],
-        stringsAsFactors = FALSE
-      ))
+    if (perm_test) {
+      null_draws[[m_name]] <- null_arr
+      praw <- .p_unadjusted(obs_mat, null_arr)
+      padj <- .p_minP(obs_mat, null_arr)
+      for (g in seq_along(eval_metrics)) {
+        pvalues <- rbind(pvalues, data.frame(
+          IDR = m_name, Metric = eval_metrics[g], t(praw[g, ]),
+          stringsAsFactors = FALSE))
+        pvalues_adj <- rbind(pvalues_adj, data.frame(
+          IDR = m_name, Metric = eval_metrics[g], t(padj[g, ]),
+          stringsAsFactors = FALSE))
+      }
     }
   }
 
   rownames(results) <- NULL
-  rownames(pvalues) <- NULL
-
   structure(
     list(results = results,
-         pvalues = if (perm_test) pvalues else NULL,
-         K = K),
+         pvalues = if (perm_test) `rownames<-`(pvalues, NULL) else NULL,
+         pvalues_adj = if (perm_test) `rownames<-`(pvalues_adj, NULL) else NULL,
+         null_draws = if (perm_test) null_draws else NULL,
+         K = K,
+         params = list(lambda = lambda, nu = nu, n_perm = if (perm_test) n_perm else NA,
+                       ties = ties, baseline = baseline, seed = seed)),
     class = "qaidr_assessment"
   )
 }
 
 
-#' Permutation test for a single DR projection
+#' Permutation test for a single pair of distance matrices
 #'
-#' Performs a permutation test to assess statistical significance of
-#' quality and behavior indices.
+#' Shares the permutation engine of \code{assess_quality()}: ranks are
+#' computed once and permuted (label-equivariance), the null uses a single
+#' uniform bijection applied to both endpoints, and p-values use
+#' \code{(c + 1) / (m + 1)} so the smallest attainable p-value is
+#' \code{1 / (m + 1)}.
 #'
-#' @param D_high High-dimensional distance matrix (n x n).
-#' @param D_low Low-dimensional distance matrix (n x n).
+#' @param D_high High-dimensional dissimilarity matrix.
+#' @param D_low Low-dimensional dissimilarity matrix.
 #' @param K Integer neighborhood size.
-#' @param n_perm Number of permutations (default 1000).
-#' @return A list with elements:
-#'   \describe{
-#'     \item{vals}{Named vector of observed index values.}
-#'     \item{pQ}{P-values for quality indices (one-tailed).}
-#'     \item{pB}{P-values for behavior indices (two-tailed).}
-#'   }
+#' @param n_perm Number of permutations (default 999).
+#' @param ties Tie policy (see \code{rank_matrix()}).
+#' @param seed Optional integer seed.
+#' @return List with \code{vals} (observed indices), \code{pQ} (one-sided
+#'   upper p-values for quality indices), \code{pB} (two-sided p-values for
+#'   behavior indices), and \code{null_stats} (the m x 6 null draws).
 #' @export
-#' @examples
-#' set.seed(42)
-#' Dh <- as.matrix(dist(matrix(rnorm(50), 10, 5)))
-#' Dl <- as.matrix(dist(matrix(rnorm(20), 10, 2)))
-#' pt <- perm_test(Dh, Dl, K = 3, n_perm = 99)
-perm_test <- function(D_high, D_low, K, n_perm = 1000) {
-  obs <- coranking_indices(D_high, D_low, K)
-  null_stats <- matrix(0, n_perm, 6)
-  N <- nrow(D_low)
+perm_test <- function(D_high, D_low, K, n_perm = 999,
+                      ties = c("error", "random"), seed = NULL) {
+  ties <- match.arg(ties)
+  if (!is.null(seed)) set.seed(seed)
+  Rh <- rank_matrix(D_high, ties = ties)
+  Rl <- rank_matrix(D_low, ties = ties)
+  obs <- indices_from_coranking(coranking_matrix(Rh, Rl), K)
+  null_stats <- perm_null_indices(Rh, Rl, K, m = n_perm)
 
-  for (i in seq_len(n_perm)) {
-    perm_idx <- sample(N)
-    D_null <- D_low[perm_idx, perm_idx]
-    null_stats[i, ] <- coranking_indices(D_high, D_null, K)
-  }
-
-  pQ <- c(
-    TC = mean(null_stats[, 1] >= obs["Q_TC"]),
-    RE = mean(null_stats[, 3] >= obs["Q_RE"]),
-    LC = mean(null_stats[, 5] >= obs["Q_LC"])
-  )
-  pB <- c(
-    TC = mean(abs(null_stats[, 2]) >= abs(obs["B_TC"])),
-    RE = mean(abs(null_stats[, 4]) >= abs(obs["B_RE"])),
-    LC = mean(abs(null_stats[, 6]) >= abs(obs["B_LC"]))
-  )
-
-  list(vals = obs, pQ = pQ, pB = pB)
+  p1 <- function(j) (1 + sum(null_stats[, j] >= obs[[j]])) / (n_perm + 1)
+  p2 <- function(j) (1 + sum(abs(null_stats[, j]) >= abs(obs[[j]]))) / (n_perm + 1)
+  pQ <- c(TC = p1("Q_TC"), RE = p1("Q_RE"), LC = p1("Q_LC"))
+  pB <- c(TC = p2("B_TC"), RE = p2("B_RE"), LC = p2("B_LC"))
+  list(vals = obs, pQ = pQ, pB = pB, null_stats = null_stats)
 }
 
 
 #' Compute quality/behavior index profiles over K
 #'
-#' Computes co-ranking indices for all neighborhood sizes from 1 to
-#' \code{K_max}, for each combination of DR method and distance metric.
+#' Ranks each space once per metric and evaluates the indices for every K on
+#' the same co-ranking matrix (the co-ranking matrix does not depend on K),
+#' reducing the cost from the previous per-K re-ranking.
 #'
-#' @param x An \code{interval_data} object (standardized).
-#' @param projections An \code{idr_projections} object.
-#' @param K_max Maximum neighborhood size (default \code{nrow(x$centers) - 2}).
-#' @param metrics Character vector of distance metrics.
-#' @return A data frame with columns Method, Metric, K, Q_TC, B_TC,
-#'   Q_RE, B_RE, Q_LC, B_LC.
+#' @inheritParams assess_quality
+#' @param K_max Maximum neighborhood size (default \code{n - 2}).
+#' @return Data frame with columns Method, Metric, K and the six indices.
 #' @export
-#' @examples
-#' \dontrun{
-#' data(cars_mm)
-#' x <- standardize(cars_mm)
-#' proj <- run_idr(x)
-#' profiles <- k_profiles(x, proj, K_max = 10)
-#' }
 k_profiles <- function(x,
                        projections,
                        K_max = NULL,
                        metrics = c("Int-Euclidean", "Hausdorff",
-                                   "Ichino-Yaguchi", "Wasserstein")) {
-
-  if (inherits(x, "interval_data")) {
-    Centers <- x$centers
-    Radii <- x$radii
-  } else {
-    stop("x must be an interval_data object")
-  }
-
+                                   "Ichino-Yaguchi", "Wasserstein"),
+                       lambda = 0.5,
+                       nu = 0.5,
+                       baseline = TRUE,
+                       ties = c("error", "random")) {
+  ties <- match.arg(ties)
+  stopifnot(inherits(x, "interval_data"))
+  Centers <- x$centers; Radii <- x$radii
   N_OBS <- nrow(Centers)
   if (is.null(K_max)) K_max <- N_OBS - 2
+  stopifnot(K_max >= 1, K_max <= N_OBS - 2)
 
-  plot_data <- data.frame()
+  eval_metrics <- metrics
+  if (baseline) eval_metrics <- c(eval_metrics, "Centers-Euclidean")
 
-  for (met in metrics) {
-    Dh <- idist(Centers, Radii, met)
-
-    for (m in names(projections)) {
-      out <- projections[[m]]
-      Dl <- if (out$type == "Point") {
-        as.matrix(dist(out$C))
+  plot_data <- vector("list", length(eval_metrics) * length(projections))
+  ii <- 0L
+  for (met in eval_metrics) {
+    Dh <- if (met == "Centers-Euclidean") as.matrix(stats::dist(Centers))
+          else idist(Centers, Radii, met, lambda = lambda, nu = nu)
+    Rh <- rank_matrix(Dh, ties = ties)
+    for (m_name in names(projections)) {
+      out <- projections[[m_name]]
+      Dl <- if (met == "Centers-Euclidean" || out$type == "Point") {
+        as.matrix(stats::dist(out$C))
       } else {
-        idist(out$C, out$R, met)
+        idist(out$C, out$R, met, lambda = lambda, nu = nu)
       }
+      Qm <- coranking_matrix(Rh, rank_matrix(Dl, ties = ties))
+      vals <- t(vapply(seq_len(K_max), function(k) indices_from_coranking(Qm, k),
+                       numeric(6)))
+      ii <- ii + 1L
+      plot_data[[ii]] <- data.frame(Method = m_name, Metric = met,
+                                    K = seq_len(K_max), vals,
+                                    stringsAsFactors = FALSE)
+    }
+  }
+  out <- do.call(rbind, plot_data)
+  rownames(out) <- NULL
+  out
+}
 
-      for (k in seq_len(K_max)) {
-        val <- coranking_indices(Dh, Dl, k)
-        plot_data <- rbind(
-          plot_data,
-          data.frame(Method = m, Metric = met, K = k,
-                     Q_TC = val["Q_TC"], B_TC = val["B_TC"],
-                     Q_RE = val["Q_RE"], B_RE = val["B_RE"],
-                     Q_LC = val["Q_LC"], B_LC = val["B_LC"],
-                     stringsAsFactors = FALSE)
-        )
+
+## ---- internal: p-value machinery ------------------------------------------
+
+#' Unadjusted Monte Carlo p-values, (c+1)/(m+1)
+#' @noRd
+.p_unadjusted <- function(obs_mat, null_arr) {
+  m <- dim(null_arr)[1]
+  p <- obs_mat; p[] <- NA_real_
+  qcols <- c("Q_TC", "Q_RE", "Q_LC"); bcols <- c("B_TC", "B_RE", "B_LC")
+  for (g in seq_len(nrow(obs_mat))) {
+    for (j in qcols) p[g, j] <- (1 + sum(null_arr[, g, j] >= obs_mat[g, j])) / (m + 1)
+    for (j in bcols) p[g, j] <- (1 + sum(abs(null_arr[, g, j]) >= abs(obs_mat[g, j]))) / (m + 1)
+  }
+  p
+}
+
+#' Single-step Westfall-Young min-P adjusted p-values.
+#' Family: per index family (TC/RE/LC), the {Q, B} x metrics tests, using the
+#' shared joint draws. Marginal null p-values for each draw are computed by
+#' the ecdf trick over the same m draws (including the draw itself), giving
+#' the discrete uniform grid {1/m, ..., 1}; the observed p enters as
+#' (c+1)/(m+1).
+#' @noRd
+.p_minP <- function(obs_mat, null_arr) {
+  m <- dim(null_arr)[1]
+  G <- nrow(obs_mat)
+  fams <- list(TC = c("Q_TC", "B_TC"), RE = c("Q_RE", "B_RE"), LC = c("Q_LC", "B_LC"))
+  padj <- obs_mat; padj[] <- NA_real_
+
+  for (fam in fams) {
+    ## marginal null p-values for every draw and test in the family
+    pnull <- array(NA_real_, c(m, G, length(fam)))
+    pobs <- matrix(NA_real_, G, length(fam))
+    for (g in seq_len(G)) {
+      for (j in seq_along(fam)) {
+        v <- null_arr[, g, fam[j]]
+        if (startsWith(fam[j], "Q")) {
+          r <- rank(-v, ties.method = "max")           # upper tail
+          pnull[, g, j] <- r / m
+          pobs[g, j] <- (1 + sum(v >= obs_mat[g, fam[j]])) / (m + 1)
+        } else {
+          av <- abs(v)
+          r <- rank(-av, ties.method = "max")
+          pnull[, g, j] <- r / m
+          pobs[g, j] <- (1 + sum(av >= abs(obs_mat[g, fam[j]]))) / (m + 1)
+        }
+      }
+    }
+    minp <- apply(pnull, 1, min)                        # min over the family per draw
+    for (g in seq_len(G)) {
+      for (j in seq_along(fam)) {
+        padj[g, fam[j]] <- (1 + sum(minp <= pobs[g, j])) / (m + 1)
       }
     }
   }
-
-  rownames(plot_data) <- NULL
-  plot_data
+  padj
 }
 
 
 #' @export
 print.qaidr_assessment <- function(x, ...) {
-  cat(sprintf("QAIDR Assessment (K = %d)\n\n", x$K))
-
+  cat(sprintf("QAIDR Assessment (K = %d%s)\n\n", x$K,
+              if (!is.null(x$pvalues_adj)) ", min-P adjusted stars" else ""))
   res <- x$results
-  if (!is.null(x$pvalues)) {
-    # Merge stars into display
-    pv <- x$pvalues
+  if (!is.null(x$pvalues_adj)) {
+    pv <- x$pvalues_adj
     for (col in c("Q_TC", "B_TC", "Q_RE", "B_RE", "Q_LC", "B_LC")) {
-      pcol <- paste0("p_", col)
-      res[[col]] <- mapply(
-        .fmt_pval, x$results[[col]], pv[[pcol]],
-        MoreArgs = list(alpha = 0.05, digits = 3)
-      )
+      res[[col]] <- mapply(.fmt_pval, x$results[[col]], pv[[col]],
+                           MoreArgs = list(alpha = 0.05, digits = 3))
     }
   } else {
     for (col in c("Q_TC", "B_TC", "Q_RE", "B_RE", "Q_LC", "B_LC")) {
       res[[col]] <- sprintf("%.3f", x$results[[col]])
     }
   }
-
   print(res, row.names = FALSE)
   invisible(x)
 }

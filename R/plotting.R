@@ -13,10 +13,11 @@ NULL
 #' @export
 #' @examples
 #' \dontrun{
-#' data(cars_mm)
-#' x <- standardize(cars_mm)
+#' C <- matrix(rnorm(80), 20, 4)
+#' R <- matrix(runif(80, 0.05, 0.25), 20, 4)
+#' x <- standardize(interval_data(C, R))
 #' proj <- run_idr(x)
-#' plot_projections(proj, labels = cars_mm$labels)
+#' plot_projections(proj)
 #' }
 plot_projections <- function(projections, labels = NULL, obs_labels = NULL) {
   proj_df <- data.frame()
@@ -47,6 +48,21 @@ plot_projections <- function(projections, labels = NULL, obs_labels = NULL) {
     )
   }
 
+  ## Legibility (Phase C): rectangles are drawn hollow with per-class color
+  ## and light transparent fill so overlaps stay readable; labels are drawn
+  ## with a white halo (offset copies) and overlap suppression.
+  halo_text <- function() {
+    list(
+      ggplot2::geom_text(
+        ggplot2::aes(x = .data$x, y = .data$y, label = .data$Label),
+        size = 2.4, color = "white", fontface = "bold", check_overlap = TRUE
+      ),
+      ggplot2::geom_text(
+        ggplot2::aes(x = .data$x, y = .data$y, label = .data$Label),
+        size = 2.2, color = "black", check_overlap = TRUE
+      )
+    )
+  }
   if (!is.null(labels)) {
     proj_df$class <- as.factor(rep(labels, length(names(projections))))
     p <- ggplot2::ggplot(proj_df) +
@@ -56,14 +72,13 @@ plot_projections <- function(projections, labels = NULL, obs_labels = NULL) {
           xmax = .data$x + .data$w,
           ymin = .data$y - .data$h,
           ymax = .data$y + .data$h,
-          color = .data$class
+          color = .data$class,
+          fill = .data$class
         ),
-        fill = "blue", alpha = 0.1
+        alpha = 0.06, linewidth = 0.35
       ) +
-      ggplot2::geom_text(
-        ggplot2::aes(x = .data$x, y = .data$y, label = .data$Label),
-        size = 2.5, check_overlap = TRUE
-      )
+      halo_text() +
+      ggplot2::guides(fill = "none")
   } else {
     p <- ggplot2::ggplot(proj_df) +
       ggplot2::geom_rect(
@@ -73,12 +88,10 @@ plot_projections <- function(projections, labels = NULL, obs_labels = NULL) {
           ymin = .data$y - .data$h,
           ymax = .data$y + .data$h
         ),
-        fill = "blue", color = "darkblue", alpha = 0.1
+        fill = "steelblue", color = "steelblue4", alpha = 0.06,
+        linewidth = 0.35
       ) +
-      ggplot2::geom_text(
-        ggplot2::aes(x = .data$x, y = .data$y, label = .data$Label),
-        size = 2.5, check_overlap = TRUE
-      )
+      halo_text()
   }
 
   p <- p +
@@ -102,8 +115,9 @@ plot_projections <- function(projections, labels = NULL, obs_labels = NULL) {
 #' @export
 #' @examples
 #' \dontrun{
-#' data(cars_mm)
-#' x <- standardize(cars_mm)
+#' C <- matrix(rnorm(80), 20, 4)
+#' R <- matrix(runif(80, 0.05, 0.25), 20, 4)
+#' x <- standardize(interval_data(C, R))
 #' proj <- run_idr(x)
 #' profiles <- k_profiles(x, proj, K_max = 10)
 #' plot_k_profiles(profiles, metric = "Wasserstein")
@@ -176,7 +190,10 @@ plot_k_profiles <- function(profile_data, metric = NULL) {
       my_theme_legend +
       ggplot2::labs(title = "Behavior (LCMC)", y = "B Score")
 
-    gridExtra::grid.arrange(
+    ## arrangeGrob (not grid.arrange) so that non-interactive sessions do not
+    ## open the default device and emit an accidental Rplots.pdf; callers
+    ## draw/save the returned grob explicitly (e.g., with ggsave()).
+    gridExtra::arrangeGrob(
       p1, p3, p5, p2, p4, p6, ncol = 3,
       top = grid::textGrob(
         paste("Evaluation Metric:", met_name),
