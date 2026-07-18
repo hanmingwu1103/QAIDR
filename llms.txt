@@ -1,4 +1,4 @@
-# QAIDR ![](reference/figures/logo.png)
+# QAIDR
 
 **Quality Assessment for Interval-Based Dimensionality Reduction**
 
@@ -14,6 +14,8 @@ high-dimensional interval data, using a co-ranking matrix framework.
   Trustworthiness & Continuity, MRRE, and LCMC
 - **6 DR method wrappers**: C-PCA, V-PCA, MR-PCA, SPCA, IMDS, Int-UMAP
 - **Permutation tests** for statistical significance
+- **Center-only baselines** to quantify the information added by
+  interval widths
 - **Visualization**: 2D projection plots and K-neighbourhood profile
   plots
 
@@ -22,18 +24,24 @@ high-dimensional interval data, using a co-ranking matrix framework.
 Install the development version from GitHub:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("hanmingwu1103/QAIDR")
+
+# Example interval datasets used below
+install.packages("dataSDA")
 ```
 
 ## Quick Start
 
 ``` r
+
 library(QAIDR)
 
-# Load and standardize the built-in Cars dataset
-data(cars_mm)
-x <- standardize(cars_mm)
+# Load the Cars data from dataSDA and convert its interval columns
+data("cars.int", package = "dataSDA")
+cars <- interval_data_from_dataSDA(cars.int)
+x <- standardize(cars)
 
 # Compute interval distances
 D <- idist(x, metric = "Wasserstein")
@@ -42,11 +50,12 @@ D <- idist(x, metric = "Wasserstein")
 proj <- run_idr(x)
 
 # Assess quality across all method-metric combinations
-result <- assess_quality(x, proj, K = 5, perm_test = TRUE, n_perm = 1000)
+result <- assess_quality(x, proj, K = 5, perm_test = TRUE, n_perm = 999,
+                         baseline = TRUE)
 print(result)
 
 # Visualize
-plot_projections(proj, labels = cars_mm$labels)
+plot_projections(proj, labels = cars$labels)
 
 profiles <- k_profiles(x, proj)
 plot_k_profiles(profiles, metric = "Wasserstein")
@@ -58,15 +67,20 @@ plot_k_profiles(profiles, metric = "Wasserstein")
 - [`vignette("introduction")`](https://hanmingwu1103.github.io/QAIDR/articles/introduction.html)
   – Basic workflow
 - [`vignette("real-data-analysis")`](https://hanmingwu1103.github.io/QAIDR/articles/real-data-analysis.html)
-  – Reproduces the real data analysis
+  – Cars and Face tutorials using `dataSDA`
 - [`vignette("simulation-study")`](https://hanmingwu1103.github.io/QAIDR/articles/simulation-study.html)
-  – Reproduces the simulation study
+  – A compact simulation workflow
+- [Manuscript reproducibility
+  guide](https://hanmingwu1103.github.io/QAIDR/README_REPRODUCIBILITY.md)
+  – seeded scripts and archived outputs for the complete study
 
 ## Citation
 
-Paulo Canas Rodrigues and Han-Ming Wu (2025), Interval-metric
+Paulo Canas Rodrigues and Han-Ming Wu (2026), *Interval-metric
 co-ranking: quality assessment of dimensionality reduction for
-interval-valued data, Technical report.
+interval-valued data*.
+
+For the package citation returned by R, run `citation("QAIDR")`.
 
 ## License
 
@@ -84,12 +98,10 @@ Create and manipulate interval-valued data objects.
   : Create interval_data from a min-max data frame
 - [`interval_data_from_array()`](https://hanmingwu1103.github.io/QAIDR/reference/interval_data_from_array.md)
   : Create interval_data from a 3D min-max array
+- [`interval_data_from_dataSDA()`](https://hanmingwu1103.github.io/QAIDR/reference/interval_data_from_dataSDA.md)
+  : Convert a dataSDA data set to interval_data
 - [`standardize()`](https://hanmingwu1103.github.io/QAIDR/reference/standardize.md)
   : Standardize interval data
-- [`cars_mm`](https://hanmingwu1103.github.io/QAIDR/reference/cars_mm.md)
-  : Cars interval data
-- [`facedata_mm`](https://hanmingwu1103.github.io/QAIDR/reference/facedata_mm.md)
-  : Face anthropometry interval data
 
 ## Distance Metrics
 
@@ -100,7 +112,7 @@ Interval distance functions for comparing interval-valued observations.
 - [`idist_euclidean()`](https://hanmingwu1103.github.io/QAIDR/reference/idist_euclidean.md)
   : Interval Euclidean distance
 - [`idist_hausdorff()`](https://hanmingwu1103.github.io/QAIDR/reference/idist_hausdorff.md)
-  : Hausdorff distance for intervals
+  : Product-Hausdorff distance for intervals
 - [`idist_ichino_yaguchi()`](https://hanmingwu1103.github.io/QAIDR/reference/idist_ichino_yaguchi.md)
   : Ichino-Yaguchi dissimilarity for intervals
 - [`idist_wasserstein()`](https://hanmingwu1103.github.io/QAIDR/reference/idist_wasserstein.md)
@@ -111,11 +123,22 @@ Interval distance functions for comparing interval-valued observations.
 Co-ranking indices, permutation tests, and K-profiles.
 
 - [`coranking_indices()`](https://hanmingwu1103.github.io/QAIDR/reference/coranking_indices.md)
-  : Compute co-ranking quality and behavior indices
+  : Compute co-ranking quality and behavior indices from distance
+  matrices
+- [`rank_matrix()`](https://hanmingwu1103.github.io/QAIDR/reference/rank_matrix.md)
+  : Rank matrix with self-exclusion and tie detection
+- [`coranking_matrix()`](https://hanmingwu1103.github.io/QAIDR/reference/coranking_matrix.md)
+  : Co-ranking matrix from two rank matrices
+- [`indices_from_coranking()`](https://hanmingwu1103.github.io/QAIDR/reference/indices_from_coranking.md)
+  : Quality and behavior indices from a co-ranking matrix
 - [`assess_quality()`](https://hanmingwu1103.github.io/QAIDR/reference/assess_quality.md)
   : Assess quality of interval DR projections
 - [`perm_test()`](https://hanmingwu1103.github.io/QAIDR/reference/perm_test.md)
-  : Permutation test for a single DR projection
+  : Permutation test for a single pair of distance matrices
+- [`perm_null_indices()`](https://hanmingwu1103.github.io/QAIDR/reference/perm_null_indices.md)
+  : Permutation null distribution of the indices
+- [`perm_null_indices_reference()`](https://hanmingwu1103.github.io/QAIDR/reference/perm_null_indices_reference.md)
+  : Reference (slow) permutation null via full co-ranking reconstruction
 - [`k_profiles()`](https://hanmingwu1103.github.io/QAIDR/reference/k_profiles.md)
   : Compute quality/behavior index profiles over K
 
@@ -150,7 +173,7 @@ Plotting functions for projections and index profiles.
 
 ### Examples
 
-- [Real Data Analysis with
+- [Real-Data Examples with
   QAIDR](https://hanmingwu1103.github.io/QAIDR/articles/real-data-analysis.md):
-- [Simulation Study with
+- [A Simulation Workflow with
   QAIDR](https://hanmingwu1103.github.io/QAIDR/articles/simulation-study.md):

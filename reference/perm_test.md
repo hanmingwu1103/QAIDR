@@ -1,23 +1,33 @@
-# Permutation test for a single DR projection
+# Permutation test for a single pair of distance matrices
 
-Performs a permutation test to assess statistical significance of
-quality and behavior indices.
+Shares the permutation engine of
+[`assess_quality()`](https://hanmingwu1103.github.io/QAIDR/reference/assess_quality.md):
+ranks are computed once and permuted (label-equivariance), the null uses
+a single uniform bijection applied to both endpoints, and p-values use
+`(c + 1) / (m + 1)` so the smallest attainable p-value is `1 / (m + 1)`.
 
 ## Usage
 
 ``` r
-perm_test(D_high, D_low, K, n_perm = 1000)
+perm_test(
+  D_high,
+  D_low,
+  K,
+  n_perm = 999,
+  ties = c("error", "random"),
+  seed = NULL
+)
 ```
 
 ## Arguments
 
 - D_high:
 
-  High-dimensional distance matrix (n x n).
+  High-dimensional dissimilarity matrix.
 
 - D_low:
 
-  Low-dimensional distance matrix (n x n).
+  Low-dimensional dissimilarity matrix.
 
 - K:
 
@@ -25,29 +35,19 @@ perm_test(D_high, D_low, K, n_perm = 1000)
 
 - n_perm:
 
-  Number of permutations (default 1000).
+  Number of permutations (default 999).
+
+- ties:
+
+  Tie policy (see
+  [`rank_matrix()`](https://hanmingwu1103.github.io/QAIDR/reference/rank_matrix.md)).
+
+- seed:
+
+  Optional integer seed.
 
 ## Value
 
-A list with elements:
-
-- vals:
-
-  Named vector of observed index values.
-
-- pQ:
-
-  P-values for quality indices (one-tailed).
-
-- pB:
-
-  P-values for behavior indices (two-tailed).
-
-## Examples
-
-``` r
-set.seed(42)
-Dh <- as.matrix(dist(matrix(rnorm(50), 10, 5)))
-Dl <- as.matrix(dist(matrix(rnorm(20), 10, 2)))
-pt <- perm_test(Dh, Dl, K = 3, n_perm = 99)
-```
+List with `vals` (observed indices), `pQ` (one-sided upper p-values for
+quality indices), `pB` (two-sided p-values for behavior indices), and
+`null_stats` (the m x 6 null draws).

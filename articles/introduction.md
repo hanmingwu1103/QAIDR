@@ -11,17 +11,21 @@ co-ranking matrices. It supports:
 - **3 quality/behavior index families**: T&C, MRRE, LCMC (6 indices
   total)
 - **6 DR methods**: C-PCA, V-PCA, MR-PCA, SPCA, IMDS, Int-UMAP
-- **Statistical tests**: Permutation-based significance testing
+- **Statistical tests**: permutation inference with family-wise
+  adjustment
+- **Baselines**: center-only assessment to isolate information from
+  widths
 
 ## Quick Start
 
 ### 1. Creating Interval Data
 
 Interval-valued data consists of observations where each variable is an
-interval $\lbrack a,b\rbrack$, represented internally by its center
-$(a + b)/2$ and radius $(b - a)/2$.
+interval $`[a, b]`$, represented internally by its center $`(a+b)/2`$
+and radius $`(b-a)/2`$.
 
 ``` r
+
 library(QAIDR)
 
 # From centers and radii matrices
@@ -36,6 +40,7 @@ print(x)
 You can also create interval data from common formats:
 
 ``` r
+
 # From a min-max data frame
 df <- data.frame(
   A.min = c(1, 3, 5), A.max = c(2, 5, 8),
@@ -58,6 +63,7 @@ Standardize interval data so that each variable has zero-mean centers
 and unit standard deviation:
 
 ``` r
+
 xs <- standardize(x)
 # Column means of centers are now 0
 round(colMeans(xs$centers), 10)
@@ -73,6 +79,7 @@ Four distance metrics are available for comparing interval-valued
 observations:
 
 ``` r
+
 D1 <- idist(xs, metric = "Wasserstein")
 D2 <- idist(xs, metric = "Hausdorff")
 D3 <- idist(xs, metric = "Int-Euclidean")
@@ -88,6 +95,7 @@ Given high-dimensional and low-dimensional distance matrices, compute
 the six quality/behavior indices:
 
 ``` r
+
 set.seed(42)
 Y <- matrix(rnorm(20), 10, 2)
 Dl <- as.matrix(dist(Y))
@@ -95,50 +103,51 @@ Dh <- idist(xs, metric = "Wasserstein")
 
 indices <- coranking_indices(Dh, Dl, K = 3)
 print(indices)
-#>         Q_TC         B_TC         Q_RE         B_RE         Q_LC         B_LC 
-#>  0.393333333 -0.066666667  0.442941176 -0.003529412  0.200000000  0.666666667
+#>        Q_TC        B_TC        Q_RE        B_RE        Q_LC        B_LC 
+#>  0.39333333 -0.06666667  0.42647059 -0.01294118  0.20000000  0.13333333 
+#> attr(,"Q")
+#>       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#>  [1,]    0    2    0    0    2    2    0    3    1
+#>  [2,]    0    0    2    1    0    0    1    2    4
+#>  [3,]    0    0    2    1    2    2    0    3    0
+#>  [4,]    3    0    1    0    1    1    1    0    3
+#>  [5,]    1    1    1    3    0    0    1    1    2
+#>  [6,]    3    2    0    2    0    0    3    0    0
+#>  [7,]    0    2    1    0    4    1    1    1    0
+#>  [8,]    1    2    2    0    1    2    2    0    0
+#>  [9,]    2    1    1    3    0    2    1    0    0
+#> attr(,"class")
+#> [1] "coranking" "matrix"    "array"    
+#> attr(,"n_ties")
+#> [1] 0
 ```
 
 - **Quality indices** (Q_TC, Q_RE, Q_LC): range \[0, 1\], higher is
   better
 - **Behavior indices** (B_TC, B_RE, B_LC): range \[-1, 1\], 0 means
-  balanced
+  balanced; positive values indicate intrusion-dominated embeddings
 
-### 5. Using Built-in Datasets
+### 5. Using `dataSDA` Datasets
+
+QAIDR does not redistribute example datasets. The converter below reads
+the interval encodings used by the CRAN package `dataSDA`.
 
 ``` r
-data(cars_mm)
-print(cars_mm)
-#> interval_data: 27 observations, 4 variables
-#> Labels: Berlina, Luxury, Sportive, Utilitarian
-summary(cars_mm)
-#> interval_data: 27 observations, 4 variables
-#> 
-#> Center summary:
-#>      Price            EngCap        TopSpeed      Acceleration   
-#>  Min.   : 21342   Min.   :1173   Min.   :157.0   Min.   : 4.500  
-#>  1st Qu.: 34420   1st Qu.:1681   1st Qu.:194.2   1st Qu.: 8.000  
-#>  Median : 60900   Median :2388   Median :213.5   Median : 9.000  
-#>  Mean   :102406   Mean   :2580   Mean   :216.0   Mean   : 9.667  
-#>  3rd Qu.:169238   3rd Qu.:3378   3rd Qu.:235.0   3rd Qu.:11.500  
-#>  Max.   :315992   Max.   :4530   Max.   :296.5   Max.   :14.500  
-#> 
-#> Radii summary:
-#>      Price            EngCap          TopSpeed      Acceleration  
-#>  Min.   :  2850   Min.   :  78.5   Min.   : 0.50   Min.   :0.000  
-#>  1st Qu.:  6064   1st Qu.: 259.8   1st Qu.: 6.50   1st Qu.:0.500  
-#>  Median : 11890   Median : 447.0   Median :12.00   Median :1.000  
-#>  Mean   : 31869   Mean   : 591.7   Mean   :11.07   Mean   :1.333  
-#>  3rd Qu.: 42689   3rd Qu.: 822.2   3rd Qu.:14.00   3rd Qu.:2.000  
-#>  Max.   :160081   Max.   :1720.5   Max.   :24.50   Max.   :4.000  
-#> 
-#> Label distribution:
-#> 
-#>     Berlina      Luxury    Sportive Utilitarian 
-#>           8           4           8           7
 
-data(facedata_mm)
-print(facedata_mm)
+if (requireNamespace("dataSDA", quietly = TRUE)) {
+  data("cars.int", package = "dataSDA")
+  cars <- interval_data_from_dataSDA(cars.int)
+  print(cars)
+
+  data("face.iGAP", package = "dataSDA")
+  face_labels <- sub("[[:digit:]]+$", "", rownames(face.iGAP))
+  face <- interval_data_from_dataSDA(face.iGAP, labels = face_labels)
+  print(face)
+} else {
+  message("Install 'dataSDA' to run the dataset examples.")
+}
+#> interval_data: 27 observations, 4 variables
+#> Labels: Utilitarian, Berlina, Sportive, Luxury
 #> interval_data: 27 observations, 6 variables
 #> Labels: FRA, HUS, INC, ISA, JPL, KHA, LOT, PHI, ROM
 ```
@@ -160,19 +169,24 @@ The typical QAIDR workflow is:
     [`plot_k_profiles()`](https://hanmingwu1103.github.io/QAIDR/reference/plot_k_profiles.md)
 
 ``` r
-# Complete example (requires symbolicDA, RSDA)
-data(cars_mm)
-x <- standardize(cars_mm)
+
+# Complete example (requires dataSDA, symbolicDA, RSDA, umap, and dplyr)
+data("cars.int", package = "dataSDA")
+cars <- interval_data_from_dataSDA(cars.int)
+x <- standardize(cars)
 
 proj <- run_idr(x)
-result <- assess_quality(x, proj, K = 5, perm_test = TRUE, n_perm = 1000)
+result <- assess_quality(x, proj, K = 5, perm_test = TRUE, n_perm = 999,
+                         baseline = TRUE)
 print(result)
 
-plot_projections(proj, labels = cars_mm$labels)
+plot_projections(proj, labels = cars$labels)
 
 profiles <- k_profiles(x, proj, K_max = 20)
 plot_k_profiles(profiles, metric = "Wasserstein")
 ```
 
 See the “Real Data Analysis” and “Simulation Study” vignettes for
-complete examples.
+compact tutorials. The complete seeded manuscript pipeline and frozen
+outputs are documented in `README_REPRODUCIBILITY.md` in the GitHub
+repository.

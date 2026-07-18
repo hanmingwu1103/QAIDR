@@ -1,4 +1,4 @@
-# QAIDR ![](reference/figures/logo.png)
+# QAIDR
 
 **Quality Assessment for Interval-Based Dimensionality Reduction**
 
@@ -14,6 +14,8 @@ high-dimensional interval data, using a co-ranking matrix framework.
   Trustworthiness & Continuity, MRRE, and LCMC
 - **6 DR method wrappers**: C-PCA, V-PCA, MR-PCA, SPCA, IMDS, Int-UMAP
 - **Permutation tests** for statistical significance
+- **Center-only baselines** to quantify the information added by
+  interval widths
 - **Visualization**: 2D projection plots and K-neighbourhood profile
   plots
 
@@ -22,18 +24,24 @@ high-dimensional interval data, using a co-ranking matrix framework.
 Install the development version from GitHub:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("hanmingwu1103/QAIDR")
+
+# Example interval datasets used below
+install.packages("dataSDA")
 ```
 
 ## Quick Start
 
 ``` r
+
 library(QAIDR)
 
-# Load and standardize the built-in Cars dataset
-data(cars_mm)
-x <- standardize(cars_mm)
+# Load the Cars data from dataSDA and convert its interval columns
+data("cars.int", package = "dataSDA")
+cars <- interval_data_from_dataSDA(cars.int)
+x <- standardize(cars)
 
 # Compute interval distances
 D <- idist(x, metric = "Wasserstein")
@@ -42,11 +50,12 @@ D <- idist(x, metric = "Wasserstein")
 proj <- run_idr(x)
 
 # Assess quality across all method-metric combinations
-result <- assess_quality(x, proj, K = 5, perm_test = TRUE, n_perm = 1000)
+result <- assess_quality(x, proj, K = 5, perm_test = TRUE, n_perm = 999,
+                         baseline = TRUE)
 print(result)
 
 # Visualize
-plot_projections(proj, labels = cars_mm$labels)
+plot_projections(proj, labels = cars$labels)
 
 profiles <- k_profiles(x, proj)
 plot_k_profiles(profiles, metric = "Wasserstein")
@@ -58,15 +67,20 @@ plot_k_profiles(profiles, metric = "Wasserstein")
 - [`vignette("introduction")`](https://hanmingwu1103.github.io/QAIDR/articles/introduction.html)
   – Basic workflow
 - [`vignette("real-data-analysis")`](https://hanmingwu1103.github.io/QAIDR/articles/real-data-analysis.html)
-  – Reproduces the real data analysis
+  – Cars and Face tutorials using `dataSDA`
 - [`vignette("simulation-study")`](https://hanmingwu1103.github.io/QAIDR/articles/simulation-study.html)
-  – Reproduces the simulation study
+  – A compact simulation workflow
+- [Manuscript reproducibility
+  guide](https://hanmingwu1103.github.io/QAIDR/README_REPRODUCIBILITY.md)
+  – seeded scripts and archived outputs for the complete study
 
 ## Citation
 
-Paulo Canas Rodrigues and Han-Ming Wu (2025), Interval-metric
+Paulo Canas Rodrigues and Han-Ming Wu (2026), *Interval-metric
 co-ranking: quality assessment of dimensionality reduction for
-interval-valued data, Technical report.
+interval-valued data*.
+
+For the package citation returned by R, run `citation("QAIDR")`.
 
 ## License
 

@@ -6,7 +6,7 @@ metric.
 ## Usage
 
 ``` r
-idist(centers, radii = NULL, metric = "Wasserstein")
+idist(centers, radii = NULL, metric = "Wasserstein", lambda = 0.5, nu = 0.5)
 ```
 
 ## Arguments
@@ -25,6 +25,16 @@ idist(centers, radii = NULL, metric = "Wasserstein")
 
   Character string: one of `"Int-Euclidean"`, `"Hausdorff"`,
   `"Ichino-Yaguchi"`, or `"Wasserstein"`.
+
+- lambda:
+
+  Optimism index in \\\[0, 1\]\\ for the Interval Euclidean
+  scalarization (default 0.5); ignored by the other dissimilarities.
+
+- nu:
+
+  Span weight for the Ichino-Yaguchi dissimilarity, canonical range
+  \\\[0, 0.5\]\\ (default 0.5); ignored by the other dissimilarities.
 
 ## Value
 

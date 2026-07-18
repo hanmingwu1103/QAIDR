@@ -22,7 +22,10 @@ idist_euclidean(centers, radii, lambda = 0.5)
 
 - lambda:
 
-  Weight parameter in \\\[0, 1\]\\ (default 0.5).
+  Weight parameter: one finite numeric scalar in \\\[0, 1\]\\ (default
+  0.5); validated here as well as in the
+  [`idist()`](https://hanmingwu1103.github.io/QAIDR/reference/idist.md)
+  dispatcher.
 
 ## Value
 

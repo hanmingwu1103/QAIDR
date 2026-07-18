@@ -7,7 +7,7 @@
 
 ### Examples
 
-- [Real Data Analysis with
+- [Real-Data Examples with
   QAIDR](https://hanmingwu1103.github.io/QAIDR/articles/real-data-analysis.md):
-- [Simulation Study with
+- [A Simulation Workflow with
   QAIDR](https://hanmingwu1103.github.io/QAIDR/articles/simulation-study.md):

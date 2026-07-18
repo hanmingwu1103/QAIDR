@@ -1,12 +1,12 @@
 # Ichino-Yaguchi dissimilarity for intervals
 
 Computes the Ichino-Yaguchi dissimilarity between interval-valued
-observations based on intersection and union of intervals.
+observations based on the interval join (hull) and meet (intersection).
 
 ## Usage
 
 ``` r
-idist_ichino_yaguchi(centers, radii, gamma = 0.5)
+idist_ichino_yaguchi(centers, radii, nu = 0.5, gamma = NULL)
 ```
 
 ## Arguments
@@ -19,9 +19,14 @@ idist_ichino_yaguchi(centers, radii, gamma = 0.5)
 
   Numeric matrix of interval half-widths (n x p).
 
+- nu:
+
+  Span weight in the canonical Ichino-Yaguchi range \\\[0, 0.5\]\\
+  (default 0.5); named \\\nu\\ in the manuscript.
+
 - gamma:
 
-  Weighting parameter (default 0.5).
+  Deprecated alias for `nu`.
 
 ## Value
 

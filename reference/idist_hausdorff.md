@@ -1,7 +1,11 @@
-# Hausdorff distance for intervals
+# Product-Hausdorff distance for intervals
 
-Computes the L2-Hausdorff distance between interval-valued observations
-represented as hyperrectangles.
+Computes the coordinatewise product-Hausdorff dissimilarity between
+interval-valued observations: the interval Hausdorff distance is taken
+per coordinate and aggregated in \\\ell_2\\. This is the manuscript's
+product-Hausdorff form; it is generally NOT the set-Hausdorff metric
+between hyperrectangles under the Euclidean point metric. The public
+metric key `"Hausdorff"` is unchanged.
 
 ## Usage
 

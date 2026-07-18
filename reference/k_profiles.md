@@ -1,7 +1,8 @@
 # Compute quality/behavior index profiles over K
 
-Computes co-ranking indices for all neighborhood sizes from 1 to
-`K_max`, for each combination of DR method and distance metric.
+Ranks each space once per metric and evaluates the indices for every K
+on the same co-ranking matrix (the co-ranking matrix does not depend on
+K), reducing the cost from the previous per-K re-ranking.
 
 ## Usage
 
@@ -10,7 +11,11 @@ k_profiles(
   x,
   projections,
   K_max = NULL,
-  metrics = c("Int-Euclidean", "Hausdorff", "Ichino-Yaguchi", "Wasserstein")
+  metrics = c("Int-Euclidean", "Hausdorff", "Ichino-Yaguchi", "Wasserstein"),
+  lambda = 0.5,
+  nu = 0.5,
+  baseline = TRUE,
+  ties = c("error", "random")
 )
 ```
 
@@ -18,32 +23,41 @@ k_profiles(
 
 - x:
 
-  An `interval_data` object (standardized).
+  An `interval_data` object (standardized or raw; the caller controls
+  preprocessing).
 
 - projections:
 
-  An `idr_projections` object.
+  An `idr_projections` object from
+  [`run_idr()`](https://hanmingwu1103.github.io/QAIDR/reference/run_idr.md).
 
 - K_max:
 
-  Maximum neighborhood size (default `nrow(x$centers) - 2`).
+  Maximum neighborhood size (default `n - 2`).
 
 - metrics:
 
-  Character vector of distance metrics.
+  Character vector of interval dissimilarities.
+
+- lambda:
+
+  Optimism index for the Interval Euclidean score (default 0.5).
+
+- nu:
+
+  Ichino-Yaguchi span weight (default 0.5).
+
+- baseline:
+
+  Logical; add the center-only Euclidean evaluation row (default
+  `TRUE`).
+
+- ties:
+
+  Tie policy passed to
+  [`rank_matrix()`](https://hanmingwu1103.github.io/QAIDR/reference/rank_matrix.md)
+  (`"error"` for primary analyses).
 
 ## Value
 
-A data frame with columns Method, Metric, K, Q_TC, B_TC, Q_RE, B_RE,
-Q_LC, B_LC.
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-data(cars_mm)
-x <- standardize(cars_mm)
-proj <- run_idr(x)
-profiles <- k_profiles(x, proj, K_max = 10)
-} # }
-```
+Data frame with columns Method, Metric, K and the six indices.

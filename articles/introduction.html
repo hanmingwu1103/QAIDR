@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Introduction to QAIDR • QAIDR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to QAIDR">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">QAIDR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,6 +31,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -76,8 +77,11 @@ LCMC (6 indices total)</li>
 <strong>6 DR methods</strong>: C-PCA, V-PCA, MR-PCA, SPCA, IMDS,
 Int-UMAP</li>
 <li>
-<strong>Statistical tests</strong>: Permutation-based significance
-testing</li>
+<strong>Statistical tests</strong>: permutation inference with
+family-wise adjustment</li>
+<li>
+<strong>Baselines</strong>: center-only assessment to isolate
+information from widths</li>
 </ul>
 </div>
 <div class="section level2">
@@ -88,11 +92,11 @@ testing</li>
 </h3>
 <p>Interval-valued data consists of observations where each variable is
 an interval
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[a, b]</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[a, b]</annotation></semantics></math>,
 represented internally by its center
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">(a+b)/2</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">(a+b)/2</annotation></semantics></math>
 and radius
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">(b-a)/2</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>b</mi><mo>−</mo><mi>a</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">(b-a)/2</annotation></semantics></math>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hanmingwu1103.github.io/QAIDR/">QAIDR</a></span><span class="op">)</span></span>
 <span></span>
@@ -161,53 +165,54 @@ the six quality/behavior indices:</p>
 <span></span>
 <span><span class="va">indices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/coranking_indices.html">coranking_indices</a></span><span class="op">(</span><span class="va">Dh</span>, <span class="va">Dl</span>, K <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">indices</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         Q_TC         B_TC         Q_RE         B_RE         Q_LC         B_LC </span></span>
-<span><span class="co">#&gt;  0.393333333 -0.066666667  0.442941176 -0.003529412  0.200000000  0.666666667</span></span></code></pre></div>
+<span><span class="co">#&gt;        Q_TC        B_TC        Q_RE        B_RE        Q_LC        B_LC </span></span>
+<span><span class="co">#&gt;  0.39333333 -0.06666667  0.42647059 -0.01294118  0.20000000  0.13333333 </span></span>
+<span><span class="co">#&gt; attr(,"Q")</span></span>
+<span><span class="co">#&gt;       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span></span>
+<span><span class="co">#&gt;  [1,]    0    2    0    0    2    2    0    3    1</span></span>
+<span><span class="co">#&gt;  [2,]    0    0    2    1    0    0    1    2    4</span></span>
+<span><span class="co">#&gt;  [3,]    0    0    2    1    2    2    0    3    0</span></span>
+<span><span class="co">#&gt;  [4,]    3    0    1    0    1    1    1    0    3</span></span>
+<span><span class="co">#&gt;  [5,]    1    1    1    3    0    0    1    1    2</span></span>
+<span><span class="co">#&gt;  [6,]    3    2    0    2    0    0    3    0    0</span></span>
+<span><span class="co">#&gt;  [7,]    0    2    1    0    4    1    1    1    0</span></span>
+<span><span class="co">#&gt;  [8,]    1    2    2    0    1    2    2    0    0</span></span>
+<span><span class="co">#&gt;  [9,]    2    1    1    3    0    2    1    0    0</span></span>
+<span><span class="co">#&gt; attr(,"class")</span></span>
+<span><span class="co">#&gt; [1] "coranking" "matrix"    "array"    </span></span>
+<span><span class="co">#&gt; attr(,"n_ties")</span></span>
+<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <ul>
 <li>
 <strong>Quality indices</strong> (Q_TC, Q_RE, Q_LC): range [0, 1],
 higher is better</li>
 <li>
 <strong>Behavior indices</strong> (B_TC, B_RE, B_LC): range [-1, 1],
-0 means balanced</li>
+0 means balanced; positive values indicate intrusion-dominated
+embeddings</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="using-built-in-datasets">5. Using Built-in Datasets<a class="anchor" aria-label="anchor" href="#using-built-in-datasets"></a>
+<h3 id="using-datasda-datasets">5. Using <code>dataSDA</code> Datasets<a class="anchor" aria-label="anchor" href="#using-datasda-datasets"></a>
 </h3>
+<p>QAIDR does not redistribute example datasets. The converter below
+reads the interval encodings used by the CRAN package
+<code>dataSDA</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cars_mm</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cars_mm</span><span class="op">)</span></span>
-<span><span class="co">#&gt; interval_data: 27 observations, 4 variables</span></span>
-<span><span class="co">#&gt; Labels: Berlina, Luxury, Sportive, Utilitarian</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cars_mm</span><span class="op">)</span></span>
-<span><span class="co">#&gt; interval_data: 27 observations, 4 variables</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Center summary:</span></span>
-<span><span class="co">#&gt;      Price            EngCap        TopSpeed      Acceleration   </span></span>
-<span><span class="co">#&gt;  Min.   : 21342   Min.   :1173   Min.   :157.0   Min.   : 4.500  </span></span>
-<span><span class="co">#&gt;  1st Qu.: 34420   1st Qu.:1681   1st Qu.:194.2   1st Qu.: 8.000  </span></span>
-<span><span class="co">#&gt;  Median : 60900   Median :2388   Median :213.5   Median : 9.000  </span></span>
-<span><span class="co">#&gt;  Mean   :102406   Mean   :2580   Mean   :216.0   Mean   : 9.667  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:169238   3rd Qu.:3378   3rd Qu.:235.0   3rd Qu.:11.500  </span></span>
-<span><span class="co">#&gt;  Max.   :315992   Max.   :4530   Max.   :296.5   Max.   :14.500  </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Radii summary:</span></span>
-<span><span class="co">#&gt;      Price            EngCap          TopSpeed      Acceleration  </span></span>
-<span><span class="co">#&gt;  Min.   :  2850   Min.   :  78.5   Min.   : 0.50   Min.   :0.000  </span></span>
-<span><span class="co">#&gt;  1st Qu.:  6064   1st Qu.: 259.8   1st Qu.: 6.50   1st Qu.:0.500  </span></span>
-<span><span class="co">#&gt;  Median : 11890   Median : 447.0   Median :12.00   Median :1.000  </span></span>
-<span><span class="co">#&gt;  Mean   : 31869   Mean   : 591.7   Mean   :11.07   Mean   :1.333  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: 42689   3rd Qu.: 822.2   3rd Qu.:14.00   3rd Qu.:2.000  </span></span>
-<span><span class="co">#&gt;  Max.   :160081   Max.   :1720.5   Max.   :24.50   Max.   :4.000  </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Label distribution:</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     Berlina      Luxury    Sportive Utilitarian </span></span>
-<span><span class="co">#&gt;           8           4           8           7</span></span>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"dataSDA"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"cars.int"</span>, package <span class="op">=</span> <span class="st">"dataSDA"</span><span class="op">)</span></span>
+<span>  <span class="va">cars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interval_data_from_dataSDA.html">interval_data_from_dataSDA</a></span><span class="op">(</span><span class="va">cars.int</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cars</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">facedata_mm</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">facedata_mm</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"face.iGAP"</span>, package <span class="op">=</span> <span class="st">"dataSDA"</span><span class="op">)</span></span>
+<span>  <span class="va">face_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"[[:digit:]]+$"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">face.iGAP</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">face</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interval_data_from_dataSDA.html">interval_data_from_dataSDA</a></span><span class="op">(</span><span class="va">face.iGAP</span>, labels <span class="op">=</span> <span class="va">face_labels</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">face</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Install 'dataSDA' to run the dataset examples."</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; interval_data: 27 observations, 4 variables</span></span>
+<span><span class="co">#&gt; Labels: Utilitarian, Berlina, Sportive, Luxury</span></span>
 <span><span class="co">#&gt; interval_data: 27 observations, 6 variables</span></span>
 <span><span class="co">#&gt; Labels: FRA, HUS, INC, ISA, JPL, KHA, LOT, PHI, ROM</span></span></code></pre></div>
 </div>
@@ -230,20 +235,24 @@ higher is better</li>
 </li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Complete example (requires symbolicDA, RSDA)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cars_mm</span><span class="op">)</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/standardize.html">standardize</a></span><span class="op">(</span><span class="va">cars_mm</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Complete example (requires dataSDA, symbolicDA, RSDA, umap, and dplyr)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"cars.int"</span>, package <span class="op">=</span> <span class="st">"dataSDA"</span><span class="op">)</span></span>
+<span><span class="va">cars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interval_data_from_dataSDA.html">interval_data_from_dataSDA</a></span><span class="op">(</span><span class="va">cars.int</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/standardize.html">standardize</a></span><span class="op">(</span><span class="va">cars</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">proj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_idr.html">run_idr</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assess_quality.html">assess_quality</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">proj</span>, K <span class="op">=</span> <span class="fl">5</span>, perm_test <span class="op">=</span> <span class="cn">TRUE</span>, n_perm <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/assess_quality.html">assess_quality</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">proj</span>, K <span class="op">=</span> <span class="fl">5</span>, perm_test <span class="op">=</span> <span class="cn">TRUE</span>, n_perm <span class="op">=</span> <span class="fl">999</span>,</span>
+<span>                         baseline <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_projections.html">plot_projections</a></span><span class="op">(</span><span class="va">proj</span>, labels <span class="op">=</span> <span class="va">cars_mm</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plot_projections.html">plot_projections</a></span><span class="op">(</span><span class="va">proj</span>, labels <span class="op">=</span> <span class="va">cars</span><span class="op">$</span><span class="va">labels</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">profiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/k_profiles.html">k_profiles</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">proj</span>, K_max <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_k_profiles.html">plot_k_profiles</a></span><span class="op">(</span><span class="va">profiles</span>, metric <span class="op">=</span> <span class="st">"Wasserstein"</span><span class="op">)</span></span></code></pre></div>
 <p>See the “Real Data Analysis” and “Simulation Study” vignettes for
-complete examples.</p>
+compact tutorials. The complete seeded manuscript pipeline and frozen
+outputs are documented in <code>README_REPRODUCIBILITY.md</code> in the
+GitHub repository.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -252,11 +261,11 @@ complete examples.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Han-Ming Wu.</p>
+  <p>Developed by Paulo Canas Rodrigues, Han-Ming Wu.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
