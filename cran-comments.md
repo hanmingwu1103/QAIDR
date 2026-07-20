@@ -2,8 +2,7 @@
 
 * Windows 10 x64 (build 19045), R 4.6.1
 * GitHub Actions: R release on macOS, Ubuntu, and Windows; R devel and oldrel
-  on Ubuntu (configured; the QAIDR 0.3.0 run will be recorded before CRAN
-  submission)
+  on Ubuntu (all passed for QAIDR 0.3.0 commit 3761d1a)
 
 ## R CMD check results
 
