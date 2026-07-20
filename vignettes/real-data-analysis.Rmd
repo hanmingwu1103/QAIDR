@@ -61,7 +61,7 @@ Assess every method--dissimilarity pair at `K = 5`. The center-only row is an
 essential comparison: it shows whether interval widths add assessment
 information beyond the midpoints alone. The default 999 permutations permit
 finite-sample p-values below 0.05, and `pvalues_adj` contains the within-family
-Westfall--Young min-P adjustment.
+symmetric randomization min-P adjustment.
 
 ```{r cars-assess}
 cars_assessment <- assess_quality(

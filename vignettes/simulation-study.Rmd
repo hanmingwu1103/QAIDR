@@ -90,8 +90,8 @@ projections <- structure(list(
 ## Assess quality, behavior, and the baseline
 
 Use 999 permutations for inferential results. QAIDR applies the finite-sample
-formula `(c + 1) / (m + 1)` and reports within-family Westfall--Young min-P
-adjustments. For exploratory debugging, a smaller number may be used only if
+formula `(c + 1) / (m + 1)` and reports within-family symmetric randomization
+min-P adjustments. For exploratory debugging, a smaller number may be used only if
 the resulting p-values are not interpreted as final evidence.
 
 ```{r assess}

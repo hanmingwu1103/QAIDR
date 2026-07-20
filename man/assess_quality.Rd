@@ -56,12 +56,15 @@ Computes the adjudicated quality and behavior indices for each combination
 of DR method and interval dissimilarity, optionally with permutation
 inference. P-values use the finite-sample Monte Carlo estimator
 \code{(c + 1) / (m + 1)} throughout. When \code{perm_test = TRUE},
-family-wise adjusted p-values are additionally computed by single-step
-Westfall-Young min-P resampling using the shared joint permutation draws;
-the multiplicity family is, per DR method and index family (T&C, MRRE,
-LCMC) at the fixed K, the set of \{quality, behavior\} tests across all
-requested metrics. Quality tests are one-sided (upper); behavior tests are
-two-sided.
+family-wise adjusted p-values are additionally computed by a symmetric
+single-step randomization min-P construction using the shared joint
+permutation draws: the observed row and all \code{m} draws enter one
+\code{B = m + 1} row pool with a common denominator and inclusive
+comparisons, giving finite-sample weak FWER control at attainable levels
+under the complete random-correspondence null. The multiplicity family
+is, per DR method and index family (T&C, MRRE, LCMC) at the fixed K, the
+set of \{quality, behavior\} tests across all requested metrics. Quality
+tests are one-sided (upper); behavior tests are two-sided.
 }
 \details{
 A center-only Euclidean baseline (\code{baseline = TRUE}) evaluates every

@@ -26,14 +26,44 @@ bad <- function(...) { cat("MISMATCH:", ..., "\n"); fails <<- fails + 1L }
 ok <- function() n_checked <<- n_checked + 1L
 
 strip <- function(x) {
-  x <- gsub("\\\\textcolor\\{red\\}\\{", "", x)
-  x <- gsub("\\\\scriptsize|\\\\textbf", "", x)
+  x <- gsub("\\\\textcolor\\{red\\}\\{|\\\\Rone\\{", "", x)
+  x <- gsub("\\\\scriptsize|\\\\textbf|\\\\tiny", "", x)
   x <- gsub("[{}]", "", x)
   gsub("\\\\,", "", x)
 }
 METRIC_REV <- c("Int-Euclidean" = "Int-Euclidean", "Hausdorff" = "Hausdorff",
                 "Ichino-Yaguchi" = "Ichino-Yaguchi", "Wasserstein" = "Wasserstein",
-                "Centers (baseline)" = "Centers-Euclidean")
+                "Centers (baseline)" = "Centers-Euclidean",
+                ## Prompt H abbreviated/renamed evaluation labels
+                "IE" = "Int-Euclidean", "H" = "Hausdorff",
+                "IY" = "Ichino-Yaguchi", "W" = "Wasserstein",
+                "Centers" = "Centers-Euclidean")
+
+## Prompt H: closed-form null means (thm:nullcal) for chance-adjusted Qc.
+mu0_null <- function(n, K) {
+  GK <- if (K < n / 2) n * K * (2 * n - 3 * K - 1) else n * (n - K) * (n - K - 1)
+  HK <- n * sum(abs(n - 2 * seq_len(K) + 1) / seq_len(K))
+  j <- seq_len(K)
+  EWn <- n / ((n - 1) * HK) * sum((1 / j) * (j * (j - 1) / 2 + (n - 1 - j) * (n - j) / 2))
+  c(Q_TC = 1 - n * K * (n - 1 - K) * (n - K) / (GK * (n - 1)),
+    Q_RE = 1 - EWn, Q_LC = K / (n - 1))
+}
+
+## Prompt H cell grammar: MEAN{\tiny(SD)\Rone{[QC]}}$^{\Rone{FRAC}}$ (sim
+## tables) or [\Rone{]VALUE[}]{\scriptsize\Rone{[QC]}}$^{*}$/$^{\Rone{*}}$
+## (single-dataset tables); parsed from the RAW (unstripped) cell.
+parse_cell2 <- function(s) {
+  star <- grepl("\\^\\{(\\\\Rone\\{)?\\*", s)
+  fm <- regmatches(s, regexec("\\$\\^\\{\\\\Rone\\{(-?[0-9.]+)\\}\\}\\$", s))[[1]]
+  qm <- regmatches(s, regexec("\\\\Rone\\{\\[(-?[0-9.]+)\\]\\}", s))[[1]]
+  mm <- regmatches(s, regexec("^\\s*(\\\\Rone\\{)?(-?[0-9]+\\.[0-9]+)", s))[[1]]
+  sm <- regmatches(s, regexec("\\{\\\\(?:tiny|scriptsize)\\s*\\((-?[0-9.]+)\\)", s))[[1]]
+  list(mean = if (length(mm) > 2) as.numeric(mm[3]) else NA_real_,
+       sd = if (length(sm) > 1) as.numeric(sm[2]) else NA_real_,
+       star = star,
+       frac = if (length(fm) > 1) as.numeric(fm[2]) else NA_real_,
+       qc = if (length(qm) > 1) as.numeric(qm[2]) else NA_real_)
+}
 tbl_rows <- function(label) {
   i0 <- grep(paste0("label\\{", label, "\\}"), tex)
   if (!length(i0)) return(NULL)
@@ -51,58 +81,75 @@ parse_cell <- function(s) {
        star = star)
 }
 
-star_rule_mc <- function(cal_csv) {
+frac_rule_mc <- function(cal_csv) {
   if (!file.exists(cal_csv)) return(NULL)
   cal <- read.csv(cal_csv); cal <- cal[cal$kind == "minP", ]
   reps <- sort(unique(cal$rep))
   if (!identical(reps, 1:25)) bad(basename(cal_csv), "does not contain exactly reps 1..25")
   idx <- c("Q_TC", "B_TC", "Q_RE", "B_RE", "Q_LC", "B_LC")
-  aggregate(cal[idx], cal[c("IDR", "Metric")], function(p) sum(p <= 0.05) >= 23)
+  aggregate(cal[idx], cal[c("IDR", "Metric")], function(p) mean(p <= 0.05))
 }
 
-check_mc_table <- function(label, sum_csv, cal_csv, tie_csv, sd_col = ".sd") {
+split_raw <- function(r) trimws(strsplit(gsub("\\\\\\\\\\s*$", "", r), "&")[[1]])
+metric_of <- function(cell2) {
+  key <- trimws(sub("\\$\\^\\{?\\\\dagger\\}?\\$", "", strip(cell2)))
+  if (key %in% names(METRIC_REV)) METRIC_REV[[key]] else NULL
+}
+
+check_mc_table <- function(label, sum_csv, cal_csv, tie_csv, n_obj, K = 10L,
+                           sd_col = ".sd") {
   rows <- tbl_rows(label); if (is.null(rows)) { bad(label, "table not found"); return() }
-  d <- read.csv(sum_csv); st <- star_rule_mc(cal_csv)
-  tf <- if (!is.null(tie_csv) && file.exists(tie_csv)) read.csv(tie_csv) else NULL
+  d <- read.csv(sum_csv); fr <- frac_rule_mc(cal_csv)
+  m0 <- mu0_null(n_obj, K)
   idx <- c("Q_TC", "B_TC", "Q_RE", "B_RE", "Q_LC", "B_LC")
   cur <- NA
   for (r in rows) {
-    cells <- trimws(strsplit(gsub("\\\\\\\\\\s*$", "", strip(r)), "&")[[1]])
+    cells <- split_raw(r)
     if (length(cells) < 8) next
-    if (nzchar(cells[1])) cur <- cells[1]
-    met <- METRIC_REV[[sub("\\$\\^\\{?\\\\dagger\\}?\\$", "", cells[2])]]
+    c1 <- trimws(strip(cells[1]))
+    if (nzchar(c1)) cur <- c1
+    met <- metric_of(cells[2])
     if (is.null(met)) next
     dd <- d[d$Method == cur & d$Metric == met, ]
     if (!nrow(dd)) { bad(label, cur, met, "no CSV row"); next }
     for (j in seq_along(idx)) {
-      pc <- parse_cell(cells[2 + j])
+      pc <- parse_cell2(cells[2 + j])
       mv <- dd[[paste0(idx[j], ".mean")]]; sv <- dd[[paste0(idx[j], sd_col)]]
       if (is.na(pc$mean) || abs(pc$mean - round(mv, 3)) > 5e-4)
         bad(label, cur, met, idx[j], "mean", pc$mean, "vs", round(mv, 3)) else ok()
       ## compact notation: parenthetical integer = SD in units of 1e-3
       if (!is.na(pc$sd) && abs(pc$sd - round(sv * 1000)) > 0.5)
         bad(label, cur, met, idx[j], "SDx1000", pc$sd, "vs", round(sv * 1000)) else ok()
-      if (!is.null(st)) {
-        se <- st[st$IDR == cur & st$Metric == met, ]
-        want <- nrow(se) && isTRUE(se[[idx[j]]])
-        if (pc$star != want) bad(label, cur, met, idx[j], "star", pc$star, "vs", want) else ok()
+      if (!is.null(fr)) {
+        se <- fr[fr$IDR == cur & fr$Metric == met, ]
+        if (!nrow(se) || is.na(pc$frac) ||
+            abs(pc$frac - round(se[[idx[j]]], 2)) > 1e-9)
+          bad(label, cur, met, idx[j], "frac", pc$frac, "vs",
+              if (nrow(se)) round(se[[idx[j]]], 2) else NA) else ok()
+      }
+      if (startsWith(idx[j], "Q")) {
+        want_qc <- round((mv - m0[[idx[j]]]) / (1 - m0[[idx[j]]]), 2)
+        if (is.na(pc$qc) || abs(pc$qc - want_qc) > 1e-9)
+          bad(label, cur, met, idx[j], "Qc", pc$qc, "vs", want_qc) else ok()
       }
     }
   }
   cat(sprintf("%s: OK so far (%d cumulative checks)\n", label, n_checked))
 }
 
-check_plain_table <- function(label, idx_csv, minp_csv) {
+check_plain_table <- function(label, idx_csv, minp_csv, n_obj, K) {
   rows <- tbl_rows(label); if (is.null(rows)) { bad(label, "table not found"); return() }
   d <- read.csv(idx_csv); pm <- read.csv(minp_csv)
+  m0 <- mu0_null(n_obj, K)
   idx <- c("Q_TC", "B_TC", "Q_RE", "B_RE", "Q_LC", "B_LC")
   cur <- NA
   for (r in rows) {
-    cells <- trimws(strsplit(gsub("\\\\\\\\\\s*$", "", strip(r)), "&")[[1]])
+    cells <- split_raw(r)
     if (length(cells) < 8) next
-    if (nzchar(cells[1])) cur <- cells[1]
+    c1 <- trimws(strip(cells[1]))
+    if (nzchar(c1)) cur <- c1
     dag_tex <- grepl("dagger", cells[2])
-    met <- METRIC_REV[[sub("\\$\\^\\{?\\\\dagger\\}?\\$", "", cells[2])]]
+    met <- metric_of(cells[2])
     if (is.null(met)) next
     dd <- d[d$Method == cur & d$Metric == met, ]
     pp <- pm[pm$IDR == cur & pm$Metric == met, ]
@@ -110,11 +157,16 @@ check_plain_table <- function(label, idx_csv, minp_csv) {
     if (!is.na(dd$tie_affected) && (dag_tex != isTRUE(dd$tie_affected)))
       bad(label, cur, met, "dagger", dag_tex, "vs", dd$tie_affected) else ok()
     for (j in seq_along(idx)) {
-      pc <- parse_cell(cells[2 + j])
+      pc <- parse_cell2(cells[2 + j])
       if (is.na(pc$mean) || abs(pc$mean - round(dd[[idx[j]]], 3)) > 5e-4)
         bad(label, cur, met, idx[j], pc$mean, "vs", round(dd[[idx[j]]], 3)) else ok()
       want <- nrow(pp) && pp[[idx[j]]] <= 0.05
       if (pc$star != want) bad(label, cur, met, idx[j], "star", pc$star, "vs", want) else ok()
+      if (startsWith(idx[j], "Q")) {
+        want_qc <- round((dd[[idx[j]]] - m0[[idx[j]]]) / (1 - m0[[idx[j]]]), 2)
+        if (is.na(pc$qc) || abs(pc$qc - want_qc) > 1e-9)
+          bad(label, cur, met, idx[j], "Qc", pc$qc, "vs", want_qc) else ok()
+      }
     }
   }
   cat(sprintf("%s: OK so far (%d cumulative checks)\n", label, n_checked))
@@ -186,6 +238,71 @@ for (comp in seq_len(nrow(mrt)))
 s3 <- read.csv(file.path(OUTPUT_DIR, "scenario3_summary.csv"))
 expect_prose("0.128/0.120", has("0.128") && has("0.120"), "Scenario III MRRE vs TC")
 
+## ---- Prompt H additions -----------------------------------------------------
+v3c_f <- file.path(OUTPUT_DIR, "h_audit_v3c_familywise.rds")
+if (file.exists(v3c_f)) {
+  v3c <- readRDS(v3c_f)
+  rup <- function(x) sprintf("%.3f", floor(x * 1000 + 0.5) / 1000)  # half-up
+  for (i in seq_len(nrow(v3c)))
+    expect_prose(rup(v3c$rate[i]), has(rup(v3c$rate[i])),
+                 paste("v3c familywise rate", v3c$family[i]))
+  expect_prose("v3c all pass", all(v3c$pass), "v3c Wilson intervals cover/undershoot 0.05")
+} else bad("prose:", "h_audit_v3c_familywise.rds missing")
+
+lam_c <- file.path(OUTPUT_DIR, "h_ushcn_lambda_components.rds")
+if (file.exists(lam_c)) {
+  cmp <- readRDS(lam_c)
+  hi <- cmp[cmp$space == "high", ]
+  expect_prose("71.0%", has(sprintf("%.1f", 100 * hi$frac_dminus_zero)),
+               "USHCN high-space frac d-=0")
+  expect_prose("0.023", has(sprintf("%.3f", round(hi$mean_ratio, 3))),
+               "USHCN high-space mean d-/d+ ratio")
+  iu <- cmp[cmp$space == "Int-UMAP", ]
+  expect_prose("Int-UMAP d- == 0 all pairs", iu$frac_dminus_zero == 1,
+               "Int-UMAP low-space d- identically zero")
+  prof <- readRDS(file.path(OUTPUT_DIR, "h_ushcn_lambda_profile.rds"))
+  rng <- function(m) range(prof$Q_TC[prof$Method == m & !is.na(prof$lambda) &
+                                       prof$lambda >= 0.05])
+  riu <- round(rng("Int-UMAP"), 2); rmr <- round(rng("MR-PCA"), 2)
+  expect_prose("IntUMAP 0.62-0.72", has(sprintf("%.2f", riu[1])) &&
+                 has(sprintf("%.2f", riu[2])), "lambda profile Int-UMAP range")
+  expect_prose("MR-PCA 0.90-0.93", has(sprintf("%.2f", rmr[1])) &&
+                 has(sprintf("%.2f", rmr[2])), "lambda profile MR-PCA range")
+} else bad("prose:", "h_ushcn_lambda_components.rds missing")
+
+face_idx <- read.csv(file.path(OUTPUT_DIR, "face_indices.csv"))
+expect_prose("Face B_LC <= 0.10", max(face_idx$B_LC) <= 0.10 + 1e-9 && has("0.10"),
+             "Face B_LC bound claim")
+
+gw_f <- file.path(OUTPUT_DIR, "h_graded_width_summary.csv")
+if (file.exists(gw_f) && any(grepl("label\\{tab:graded_width\\}", tex))) {
+  gw <- read.csv(gw_f)
+  pri <- gw[gw$primary == TRUE | gw$primary == "TRUE", ]
+  i0 <- grep("label\\{tab:graded_width\\}", tex)
+  i2 <- i0 + which(grepl("\\\\bottomrule", tex[(i0 + 1):(i0 + 20)]))[1]
+  rows <- tex[(i0 + 1):(i2 - 1)]
+  for (m in unique(pri$Method)) {
+    row <- rows[grepl(paste0("^\\s*", m, " &"), rows)]
+    if (!length(row)) { bad("tab:graded_width", m, "row missing"); next }
+    cells <- trimws(strsplit(gsub("\\\\\\\\\\s*$", "", strip(row[1])), "&")[[1]])
+    for (k in 1:3) {
+      lv <- c("L1", "L2", "L3")[k]
+      want <- round(pri$mean_qc_diff[pri$Method == m & pri$level == lv], 3)
+      got <- as.numeric(cells[1 + k])
+      if (is.na(got) || abs(got - want) > 5e-4)
+        bad("tab:graded_width", m, lv, got, "vs", want) else ok()
+    }
+  }
+  expect_prose("graded MCSE <= 0.006", max(pri$mcse) <= 0.006 + 1e-9 && has("0.006"),
+               "graded-width MCSE bound")
+  iu <- round(pri$mean_qc_diff[pri$Method == "Int-UMAP"], 3)
+  mr <- round(pri$mean_qc_diff[pri$Method == "MR-PCA"], 3)
+  expect_prose("IntUMAP 0.013->0.517", has(sprintf("%.3f", min(iu))) &&
+                 has(sprintf("%.3f", max(iu))), "graded Int-UMAP range prose")
+  expect_prose("MR-PCA -> -0.184", has(sprintf("%.3f", min(mr))),
+               "graded MR-PCA prose")
+} else bad("prose:", "graded-width outputs or table missing")
+
 ## ---- B2 appendix prose (checked only once the appendix is integrated) ------
 if (any(grepl("label\\{app:b2\\}", tex))) {
   sens <- read.csv(file.path(OUTPUT_DIR, "b2_sensitivity.csv"))
@@ -235,17 +352,22 @@ jsonlite::write_json(fig_manifest, file.path(OUTPUT_DIR, "figure_manifest.json")
 ## ---- run table checks -------------------------------------------------------
 check_mc_table("tab:sim1_results", file.path(OUTPUT_DIR, "scenario1_summary.csv"),
                file.path(OUTPUT_DIR, "scenario1_calibration.csv"),
-               file.path(OUTPUT_DIR, "scenario1_tie_flags.csv"))
+               file.path(OUTPUT_DIR, "scenario1_tie_flags.csv"),
+               n_obj = 300L, K = 10L)
 check_mc_table("tab:sim2_results", file.path(OUTPUT_DIR, "scenario2_summary.csv"),
-               file.path(OUTPUT_DIR, "scenario2_calibration.csv"), NULL)
+               file.path(OUTPUT_DIR, "scenario2_calibration.csv"), NULL,
+               n_obj = 800L, K = 10L)
 check_table3()
 check_plain_table("tab:realdata_results", file.path(OUTPUT_DIR, "face_indices.csv"),
-                  file.path(OUTPUT_DIR, "face_pvalues_minP.csv"))
+                  file.path(OUTPUT_DIR, "face_pvalues_minP.csv"),
+                  n_obj = 27L, K = 5L)
 check_plain_table("tab:ushcn_results", file.path(OUTPUT_DIR, "midscale_indices.csv"),
-                  file.path(OUTPUT_DIR, "midscale_pvalues_minP.csv"))
+                  file.path(OUTPUT_DIR, "midscale_pvalues_minP.csv"),
+                  n_obj = 645L, K = 10L)
 if (any(grepl("label\\{tab:sim4_results\\}", tex)))
   check_mc_table("tab:sim4_results", file.path(OUTPUT_DIR, "scenario4_summary.csv"),
-                 file.path(OUTPUT_DIR, "scenario4_calibration.csv"), NULL)
+                 file.path(OUTPUT_DIR, "scenario4_calibration.csv"), NULL,
+                 n_obj = 300L, K = 10L)
 
 cat(sprintf("\nCHECKS: %d passed, %d MISMATCHES\n", n_checked, fails))
 

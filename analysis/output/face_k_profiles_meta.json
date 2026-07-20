@@ -3,24 +3,25 @@
   "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/face.R",
   "provenance_status": "contemporaneous",
   "run_mode": "full",
-  "created": "2026-07-17 00:09:27 +0800",
-  "elapsed_sec": 13.2308,
-  "max_gc_mb": 449.9,
+  "created": "2026-07-19 17:34:05 +0800",
+  "elapsed_sec": 13.0908,
+  "max_gc_mb": 427.1,
   "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
   "packages": {
-    "QAIDR": "0.2.0",
+    "QAIDR": "0.3.0",
+    "dataSDA": "0.2.6",
     "symbolicDA": "0.6.2",
     "RSDA": "3.2.5",
     "umap": "0.2.10.0",
     "coRanking": "0.2.5"
   },
   "input_hashes": {
-    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "e62ec3634d89121dcad97ed5ac60ddd91b977b8465e6fd61fc89ea9d9b278b3b",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "f2ed7c225a9bcf3f8dc37641afeed446450323442577dbe7bcd1241891e45628",
     "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
   },
   "output_hashes": {
-    "csv": "82760c962791d9bcf9580480493c8afd3e5bf0991aaff07a75cc764049042ec6",
-    "rds": "8390baf061b3bc859af99532c843c56dfa23740e11ee81145ba65cf99c07105e"
+    "csv": "2a0a5899d0264b17ba415b5c8c4d83c18a5462fe99323c2ee111ced1ae091885",
+    "rds": "c5e7130c40f7d91af91efccf0056b355fdd1cde9b96c648607d84c9f0bb849af"
   },
   "seeds": {},
   "extra": []

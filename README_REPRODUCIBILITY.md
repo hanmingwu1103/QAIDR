@@ -15,7 +15,7 @@ rules, and SHA-256 records are retained by the acquisition pipeline.
 The manuscript run used:
 
 * R 4.6.1 (Windows UCRT)
-* QAIDR 0.2.0
+* QAIDR 0.3.0
 * dataSDA 0.2.6 (the `face.iGAP` object is loaded at run time)
 * symbolicDA 0.6-2
 * RSDA 3.2.5
@@ -71,6 +71,12 @@ stops at the first failure.
 | K robustness | `b2_k_profiles.R`, `b2_k_profiles_merge.R` | profile summaries and Kendall stability |
 | Lambda/nu sensitivity | `b2_sensitivity.R` | exact Face breakpoints, grids and endpoint audit |
 | C-PCA mechanism | `b2_cpca_diagnostics.R` | `b2_cpca_diagnostics.csv` |
+| Symmetric min-P regeneration | `regen_calibration.R`, `h_regen_s4_calibration.R` | regenerated calibration and adjusted-p outputs |
+| Symmetric min-P calibration audit | `h_audit_v3c.R` | `h_audit_v3c_familywise.csv` |
+| Old/new inference audit | `h_delta_table.R` | `h_delta_table.csv` |
+| USHCN lambda mechanism | `h_ushcn_lambda.R` | lambda profiles, components, runtime and figure |
+| Graded width signal | `h_graded_width.R` | per-replication results, summaries and runtime |
+| Tie-policy audit | `h_tie_policy_audit.R` | `h_tie_policy_audit.csv` |
 | Calibration gates | `stage4_gate2.R` | `stage4_gates.json`, per-replication calibration |
 | LaTeX tables | `tables_to_tex.R` | `analysis/output/tex/*.tex` |
 | Final verification | `verify_manuscript_numbers.R` | exit status and figure manifest |
@@ -87,9 +93,12 @@ audit used to confirm the published significance markers.
   structural ties use 50 seeded uniform resolutions, are flagged, and report
   their maximum resolution spread.
 * Permutations apply one uniform label bijection to both endpoints of the
-  embedded ranks. P-values use `(c + 1)/(m + 1)` with `m = 999`. Single-step
-  Westfall--Young min-P adjustment controls multiplicity within each index
-  family across metrics for a method at fixed K.
+  embedded ranks. P-values use `(c + 1)/(m + 1)` with `m = 999`. QAIDR 0.3.0
+  uses the symmetric single-step randomization min-P construction documented
+  in `NEWS.md`: the observed row and all randomization rows share one
+  denominator and inclusive comparisons. It provides finite-sample weak FWER
+  control at attainable levels under the complete random-correspondence null
+  for each prespecified index family across metrics at fixed K.
 * The simulation study uses 100 independently seeded datasets per scenario
   and reports standard deviations and Monte Carlo standard errors. Calibration
   is evaluated on a prespecified subset of replications.
@@ -98,9 +107,10 @@ audit used to confirm the published significance markers.
 
 ## Provenance boundary
 
-The saved numerical outputs and their sidecars are the frozen manuscript run.
-Subsequent CRAN-facing metadata, documentation, and the runtime `dataSDA`
-converter do not change the numerical index algorithms. The Face object in
-`dataSDA` was verified to reproduce the former centers, radii, and labels
-exactly. Protected rejected-submission files and raw NOAA downloads are not
-part of this repository release.
+The saved numerical outputs and their sidecars are the canonical QAIDR 0.3.0
+manuscript run. Version 0.3.0 changes familywise-adjusted p-values; all affected
+inference outputs were regenerated, and `h_delta_table.csv` records the audit
+against the previous implementation. The Face object in `dataSDA` was verified
+to reproduce the former centers, radii, and labels exactly. Protected
+rejected-submission files and raw NOAA downloads are not part of this
+repository release.

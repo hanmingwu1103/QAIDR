@@ -1,0 +1,36 @@
+{
+  "name": "h_ushcn_lambda_profile",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/h_ushcn_lambda.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-19 20:05:36 +0800",
+  "elapsed_sec": 840.1735,
+  "max_gc_mb": 1334.8,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.3.0",
+    "dataSDA": "0.2.6",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "f2ed7c225a9bcf3f8dc37641afeed446450323442577dbe7bcd1241891e45628",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "055a1af3db75f6c5d5b37d6c1c3019ffef1764c94d8a9064135e37d3cc381ad3",
+    "rds": "a57f51cd49ec2a25771db4215c1b8613586e9f4f3024950f55082cee6a539a79"
+  },
+  "seeds": {},
+  "extra": {
+    "K": 10,
+    "n": 645,
+    "lambda_grid": [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1],
+    "tie_seed": 20266715,
+    "n_res": 50,
+    "prereg": "H_PREREGISTRATION.md sec 2 (post-A2)",
+    "baseline_row": "lambda = NA, center-only Euclidean"
+  }
+}

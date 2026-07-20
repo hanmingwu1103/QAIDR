@@ -1,0 +1,32 @@
+{
+  "name": "h_ushcn_lambda_components",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/h_ushcn_lambda.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-19 19:56:32 +0800",
+  "elapsed_sec": 296.5927,
+  "max_gc_mb": 1334.8,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.3.0",
+    "dataSDA": "0.2.6",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "f2ed7c225a9bcf3f8dc37641afeed446450323442577dbe7bcd1241891e45628",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "92dea06b9b148896ab7d678d3acc769083bd2a7d96fd4db66eb6160d8e44df17",
+    "rds": "06999e45fe43162464d764a55cc4225c3b62f2adca4b52bbba561a18e144f61d"
+  },
+  "seeds": {},
+  "extra": {
+    "n": 645,
+    "prereg": "H_PREREGISTRATION.md sec 2 (post-A2)",
+    "pair_def": "unordered off-diagonal i<j"
+  }
+}

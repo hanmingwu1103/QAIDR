@@ -1,6 +1,6 @@
 Package: QAIDR
 Title: Quality Assessment for Interval-Based Dimensionality Reduction
-Version: 0.2.0
+Version: 0.3.0
 Authors@R:
     c(person("Paulo Canas", "Rodrigues", role = "aut",
              comment = c(ORCID = "0000-0002-1248-9910")),

@@ -201,7 +201,7 @@ coranking_indices <- function(Dh, Dl, K, ties = c("error", "random"),
 #' @param m Integer number of permutations (default 999).
 #' @param perms Optional m x n integer matrix whose rows are permutations of
 #'   \code{1:n}. When supplied, these joint draws are used instead of fresh
-#'   \code{sample.int()} draws. Required for Westfall-Young min-P families:
+#'   \code{sample.int()} draws. Required for joint-draw min-P families:
 #'   every family member (e.g., every metric for one DR method) must be
 #'   evaluated under the SAME permutation draws so that the joint null
 #'   dependence is preserved.

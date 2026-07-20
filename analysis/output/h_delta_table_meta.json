@@ -1,0 +1,31 @@
+{
+  "name": "h_delta_table",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/h_delta_table.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-19 20:43:44 +0800",
+  "elapsed_sec": 1.6632,
+  "max_gc_mb": 115.3,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "dataSDA": "0.2.6",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "f2ed7c225a9bcf3f8dc37641afeed446450323442577dbe7bcd1241891e45628",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "924218febf354075f9a051ea9a5882a25555904c1992e7918fc235aa282c46c5",
+    "rds": "77b7ed262eca75aa8c42eefd4d9f8c812c95e07c93ba3083111a9f381f0cc25d"
+  },
+  "seeds": {},
+  "extra": {
+    "note": "A2 re-baseline: for Face/USHCN, old = stored production values, new = committed-pipeline QAIDR 0.3.0 regeneration; raw deltas reflect the pre-existing pipeline re-baselining, adjusted deltas additionally reflect the symmetric min-P correction. For calibrations, old/new_adj columns hold the rejection fraction across 25 replicates and old/new_marker the legacy 90% star rule for comparison; the manuscript now displays fractions directly.",
+    "prereg": "H_PREREGISTRATION.md sec 1.4 (post-A2)"
+  }
+}

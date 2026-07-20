@@ -1,0 +1,36 @@
+{
+  "name": "h_audit_v3c_familywise",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/h_audit_v3c.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-19 17:53:45 +0800",
+  "elapsed_sec": 1127.7532,
+  "max_gc_mb": 151.4,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.3.0",
+    "dataSDA": "0.2.6",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R": "f2ed7c225a9bcf3f8dc37641afeed446450323442577dbe7bcd1241891e45628",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "e719d2ff7bc685577feae882bd2d46bd9b9d6b50625231a0df848e91042b7af3"
+  },
+  "output_hashes": {
+    "csv": "34b864c5b6edd25992e30dd5c7a5a6aee0ac444a3934a57742fc5d8f3ad71366",
+    "rds": "393f2ffb552ddb5b51c2b87d5b11c2f9fb37ad1cef3da07bb39c78f0e301a6c9"
+  },
+  "seeds": {},
+  "extra": {
+    "n_rep": 2000,
+    "m": 999,
+    "alpha": 0.05,
+    "engine": "symmetric randomization min-P (QAIDR 0.3.0)",
+    "seed_stream": "20260719+9.7e6+r (data), +9.8e6+r (perms)",
+    "prereg": "H_PREREGISTRATION.md sec 1.4 (post-A1)",
+    "rule": "Wilson 95% CI contains alpha or lies below"
+  }
+}

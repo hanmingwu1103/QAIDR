@@ -1,3 +1,42 @@
+# QAIDR 0.3.0 (2026-07-19)
+
+Inference-correctness release. Adjusted p-values produced with QAIDR <= 0.2.0
+are not valid familywise quantities and must be regenerated; unadjusted
+(marginal) p-values and all descriptive indices are unchanged.
+
+## Corrections
+
+* `.p_minP()` (the familywise adjustment behind `pvalues_adj` in
+  `assess_quality()`) is replaced by a fully symmetric single-step
+  randomization min-P construction. The previous implementation compared an
+  observed plus-one p-value on the `(m + 1)` denominator against null
+  pseudo-p-values ranked on an `m` denominator; this asymmetry breaks the
+  exchangeability of the observed row and can inflate the familywise error
+  rate (an exact two-coordinate counterexample with `m = 19` gives FWER
+  0.0883 at nominal 0.05). The corrected construction pools the observed row
+  with all `m` joint draws into one `B = m + 1` row set, computes every
+  row's marginal p-value with the common denominator `B` and inclusive
+  comparisons, and adjusts by the ECDF of the per-row family minima. It has
+  finite-sample weak FWER control at attainable levels under the complete
+  random-correspondence null (row exchangeability), verified by an
+  independent triple-loop oracle, complete-orbit enumeration at all
+  attainable levels, and the counterexample above (new FWER 0.0108).
+  Observed marginal p-values are byte-identical to `pvalues`
+  (`(c + 1) / (m + 1)`); only `pvalues_adj` changes, and only upward or
+  downward within the same family definition (families, tails, shared joint
+  draws, and the API are unchanged).
+
+## Tests
+
+* New oracle suite `test-minp-symmetric.R` with independently generated
+  fixtures (`minp_oracle_vectors.rds`): exact rational agreement on random
+  tied arrays, edge cases (`m = 1`, duplicated rows, all-equal statistics,
+  family sizes 1 and 4), complete-orbit weak-FWER enumeration at every
+  attainable level, the `m = 19` counterexample, one-hypothesis reduction,
+  observed-row identity with the marginal p-value, Q upper-tail versus |B|
+  two-sided handling, metric-row relabeling equivariance, and a
+  deliberate-failure self-test.
+
 # QAIDR 0.2.0 (2026-07-18)
 
 Correctness release implementing the adjudicated index specification from

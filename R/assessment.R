@@ -4,12 +4,15 @@
 #' of DR method and interval dissimilarity, optionally with permutation
 #' inference. P-values use the finite-sample Monte Carlo estimator
 #' \code{(c + 1) / (m + 1)} throughout. When \code{perm_test = TRUE},
-#' family-wise adjusted p-values are additionally computed by single-step
-#' Westfall-Young min-P resampling using the shared joint permutation draws;
-#' the multiplicity family is, per DR method and index family (T&C, MRRE,
-#' LCMC) at the fixed K, the set of \{quality, behavior\} tests across all
-#' requested metrics. Quality tests are one-sided (upper); behavior tests are
-#' two-sided.
+#' family-wise adjusted p-values are additionally computed by a symmetric
+#' single-step randomization min-P construction using the shared joint
+#' permutation draws: the observed row and all \code{m} draws enter one
+#' \code{B = m + 1} row pool with a common denominator and inclusive
+#' comparisons, giving finite-sample weak FWER control at attainable levels
+#' under the complete random-correspondence null. The multiplicity family
+#' is, per DR method and index family (T&C, MRRE, LCMC) at the fixed K, the
+#' set of \{quality, behavior\} tests across all requested metrics. Quality
+#' tests are one-sided (upper); behavior tests are two-sided.
 #'
 #' A center-only Euclidean baseline (\code{baseline = TRUE}) evaluates every
 #' projection with plain Euclidean distances between interval centers in both
@@ -79,7 +82,7 @@ assess_quality <- function(x,
     null_arr <- if (perm_test)
       array(NA_real_, c(n_perm, length(eval_metrics), 6),
             dimnames = list(NULL, eval_metrics, idx_names)) else NULL
-    ## Westfall-Young requirement: ONE set of joint permutation draws per
+    ## Joint-draw requirement: ONE set of joint permutation draws per
     ## method, applied identically to every metric in the family, so the
     ## min-P adjustment sees the true joint null dependence across metrics.
     perms <- if (perm_test)
@@ -244,42 +247,40 @@ k_profiles <- function(x,
   p
 }
 
-#' Single-step Westfall-Young min-P adjusted p-values.
+#' Symmetric single-step randomization min-P adjusted p-values.
 #' Family: per index family (TC/RE/LC), the {Q, B} x metrics tests, using the
-#' shared joint draws. Marginal null p-values for each draw are computed by
-#' the ecdf trick over the same m draws (including the draw itself), giving
-#' the discrete uniform grid {1/m, ..., 1}; the observed p enters as
-#' (c+1)/(m+1).
+#' shared joint draws. The observed row and all m randomization rows use one
+#' common B = m + 1 denominator and inclusive comparisons: with rows
+#' b = 0..m (b = 0 observed), p[b,h] = (1/B) sum_r 1{T[r,h] >= T[b,h]},
+#' M[b] = min_h p[b,h], padj[h] = (1/B) sum_b 1{M[b] <= p[0,h]}. Under row
+#' exchangeability (complete random-correspondence null) this gives
+#' finite-sample weak FWER control at attainable levels.
 #' @noRd
 .p_minP <- function(obs_mat, null_arr) {
   m <- dim(null_arr)[1]
+  B <- m + 1L
   G <- nrow(obs_mat)
-  fams <- list(TC = c("Q_TC", "B_TC"), RE = c("Q_RE", "B_RE"), LC = c("Q_LC", "B_LC"))
-  padj <- obs_mat; padj[] <- NA_real_
+  fams <- list(TC = c("Q_TC", "B_TC"),
+               RE = c("Q_RE", "B_RE"),
+               LC = c("Q_LC", "B_LC"))
+  padj <- obs_mat
+  padj[] <- NA_real_
 
   for (fam in fams) {
-    ## marginal null p-values for every draw and test in the family
-    pnull <- array(NA_real_, c(m, G, length(fam)))
-    pobs <- matrix(NA_real_, G, length(fam))
+    ## Symmetric randomization p-values for observed + all m joint rows.
+    pall <- array(NA_real_, c(B, G, length(fam)))
     for (g in seq_len(G)) {
       for (j in seq_along(fam)) {
-        v <- null_arr[, g, fam[j]]
-        if (startsWith(fam[j], "Q")) {
-          r <- rank(-v, ties.method = "max")           # upper tail
-          pnull[, g, j] <- r / m
-          pobs[g, j] <- (1 + sum(v >= obs_mat[g, fam[j]])) / (m + 1)
-        } else {
-          av <- abs(v)
-          r <- rank(-av, ties.method = "max")
-          pnull[, g, j] <- r / m
-          pobs[g, j] <- (1 + sum(av >= abs(obs_mat[g, fam[j]]))) / (m + 1)
-        }
+        v <- c(obs_mat[g, fam[j]], null_arr[, g, fam[j]])
+        if (startsWith(fam[j], "B")) v <- abs(v)
+        ## ties.method = "max" gives #{r: v[r] >= v[b]} inclusively.
+        pall[, g, j] <- rank(-v, ties.method = "max") / B
       }
     }
-    minp <- apply(pnull, 1, min)                        # min over the family per draw
+    minp <- apply(pall, 1L, min)
     for (g in seq_len(G)) {
       for (j in seq_along(fam)) {
-        padj[g, fam[j]] <- (1 + sum(minp <= pobs[g, j])) / (m + 1)
+        padj[g, fam[j]] <- sum(minp <= pall[1L, g, j]) / B
       }
     }
   }

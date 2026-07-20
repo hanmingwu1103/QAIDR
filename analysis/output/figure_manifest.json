@@ -1,32 +1,17 @@
 {
-  "RealData_QBK_Int-Euclidean.pdf": {
-    "manuscript": "LaTeX/QA-IntervalDR_20260830_SADM/LaTeX/RealData_QBK_Int-Euclidean.pdf",
-    "sha256": "cfd45ef279eb177840ac0aa0732dfbc1eb53152cebb68b9c335a26d008ce2252",
-    "analysis_match": true
-  },
-  "RealData_QBK_Hausdorff.pdf": {
-    "manuscript": "LaTeX/QA-IntervalDR_20260830_SADM/LaTeX/RealData_QBK_Hausdorff.pdf",
-    "sha256": "83d20cea9fb92aa1f866650be64a3fae41ccc5e6098ac907b7fb1f7f90f822ac",
-    "analysis_match": true
-  },
-  "RealData_QBK_Ichino-Yaguchi.pdf": {
-    "manuscript": "LaTeX/QA-IntervalDR_20260830_SADM/LaTeX/RealData_QBK_Ichino-Yaguchi.pdf",
-    "sha256": "ee2def86697f0504b75c3392424b9cefc3f98feb0320fe0d52874eda50bedac1",
-    "analysis_match": true
-  },
-  "RealData_QBK_Wasserstein.pdf": {
-    "manuscript": "LaTeX/QA-IntervalDR_20260830_SADM/LaTeX/RealData_QBK_Wasserstein.pdf",
-    "sha256": "623e8c50c83bc08825fc1847a0f1b23fa5bef9b27ea4c3238260eb044bb43f42",
+  "RealData_QBK_faceted.pdf": {
+    "manuscript": "LaTeX/QA-IntervalDR_20260830_SADM/LaTeX/RealData_QBK_faceted.pdf",
+    "sha256": "64476764f40c179a032ea6d361cc46a7b872b663c9e64ef93f14ecf9cf3345ee",
     "analysis_match": true
   },
   "RealData_2D_Projections.pdf": {
     "manuscript": "LaTeX/QA-IntervalDR_20260830_SADM/LaTeX/RealData_2D_Projections.pdf",
-    "sha256": "d24127e2a29fff3fdf0070b8c2607583ba5cb3443edd9d317087a055bf07064a",
+    "sha256": "cb959f61ca8705a3fdf310024316819aab674c69bb7d092fe33712b1f004956a",
     "analysis_match": true
   },
-  "RealData_QBK_Centers-Euclidean.pdf": {
-    "manuscript": "LaTeX/QA-IntervalDR_20260830_SADM/LaTeX/RealData_QBK_Centers-Euclidean.pdf",
-    "sha256": "39167b5cc86dc65b845c1c4644524cb3f496570b1e856bc90e6478a341983eb8",
+  "USHCN_lambda_profile.pdf": {
+    "manuscript": "LaTeX/QA-IntervalDR_20260830_SADM/LaTeX/USHCN_lambda_profile.pdf",
+    "sha256": "3d668843bf876b3726cc4c60c48160cf041660d12bcdb0acbba451e49abc9020",
     "analysis_match": true
   }
 }
