@@ -15,7 +15,7 @@
     "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "5339306f9167b8195207ffc47c3d864600634ca5c1cb08d9598456a8fe34a132",
     "Rcode-QAIDR/QAIDR/analysis/scripts/scenario1.r": "83976e2c49e59917b14c104535b582e64bf753c63200bdcb65c2676a515f9ae3",
     "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.r": "4ef357ed4f149af86094c0387ccc6c1082f7572a8d969807d2f21e37a5ad6515",
-    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "393cb1df392dee5d559d19712c696375309d60077e8d07bb1a5ba50421481155"
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "8494f42969b911482e7069e733e21a8e4d971bb55e75e29430694d3a28ab84a6"
   },
   "extra": {
     "K": 10,
@@ -54,6 +54,14 @@
       ],
       "note": "line-ending-only change; verified recorded hash equals the CRLF form of the same bytes",
       "when": "2026-08-16 09:30:25 +0800"
+    },
+    {
+      "action": "refresh versioned source-manifest hash after byte restoration",
+      "fields": [
+        "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json"
+      ],
+      "note": "manifest restored to its produced bytes; content unchanged",
+      "when": "2026-08-16 09:34:40 +0800"
     }
   ]
 }

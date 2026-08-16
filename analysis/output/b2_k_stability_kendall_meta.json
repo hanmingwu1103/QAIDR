@@ -20,7 +20,7 @@
     "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "9e5ca8791c2554a985306e353c6aea926c0e06417aed9b0ce930ca405c01def0",
     "Rcode-QAIDR/QAIDR/analysis/scripts/b2_k_profiles.r": "cfb14fc174d3b0406520e43f353ea5b39918fafcd2a49fe4cc9f623d37ada219",
     "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.r": "4ef357ed4f149af86094c0387ccc6c1082f7572a8d969807d2f21e37a5ad6515",
-    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "393cb1df392dee5d559d19712c696375309d60077e8d07bb1a5ba50421481155"
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "8494f42969b911482e7069e733e21a8e4d971bb55e75e29430694d3a28ab84a6"
   },
   "output_hashes": {
     "csv": "ea65a4256efd87251df38726840280e34b20096a2c0cb18ec4e23ade329719db",
@@ -58,6 +58,14 @@
       ],
       "note": "line-ending-only change; verified recorded hash equals the CRLF form of the same bytes",
       "when": "2026-08-16 09:30:24 +0800"
+    },
+    {
+      "action": "refresh versioned source-manifest hash after byte restoration",
+      "fields": [
+        "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json"
+      ],
+      "note": "manifest restored to its produced bytes; content unchanged",
+      "when": "2026-08-16 09:34:40 +0800"
     }
   ]
 }
