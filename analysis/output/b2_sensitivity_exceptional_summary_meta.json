@@ -1,0 +1,45 @@
+{
+  "name": "b2_sensitivity_exceptional_summary",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/b2_sensitivity.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 14:32:21 +0800",
+  "elapsed_sec": 968.0708,
+  "max_gc_mb": 450.2,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "8494f42969b911482e7069e733e21a8e4d971bb55e75e29430694d3a28ab84a6"
+  },
+  "output_hashes": {
+    "csv": "9fe0bb171e60005db1966854fb8a0284dc4bed39a1b1f125ee3609a0855e593b",
+    "rds": "9e45474f6eeb174ae4162a8a5f4cd899a7bb2c0a517124155c495ed4c5389e04"
+  },
+  "seeds": {},
+  "extra": [],
+  "rebind_history": [
+    {
+      "rebound": [
+        "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R"
+      ],
+      "reason": "Stage 3 mechanical repairs; changes classified nonnumerical (case-exactness, guards, comments, assertions)",
+      "note": "input hashes only; packages/r_version/output_hashes untouched",
+      "when": "2026-08-16 02:26:53 +0800"
+    },
+    {
+      "action": "bind to immutable versioned source manifest",
+      "producing_qaidr_version": "0.2.0",
+      "manifest": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json",
+      "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
+      "note": "producing version preserved; packages/output_hashes untouched",
+      "when": "2026-08-16 09:01:05 +0800"
+    }
+  ]
+}

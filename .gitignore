@@ -7,3 +7,14 @@ inst/doc
 *.tar.gz
 .claude/
 docs/
+/Rplots.pdf
+/analysis/data-raw/ghcnd/
+/analysis/output/logs/
+/analysis/output/*_QUICK.*
+
+# Source-tree contamination (see revision/IMPLEMENTATION_LOG_PHASE3.md):
+# stray copies and OS cache directories that must never enter a release.
+/%SystemDrive%/
+/git/
+/github/
+/bak/

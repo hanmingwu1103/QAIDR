@@ -1,0 +1,47 @@
+{
+  "name": "scenario2_factorial_per_rep",
+  "run_mode": "full",
+  "created": "2026-07-15 23:03:19 +0800",
+  "elapsed_sec": 73816.8956,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": [
+    "0.2.0",
+    "0.6.2",
+    "3.2.5",
+    "0.2.10.0",
+    "0.2.5"
+  ],
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenario2.r": "c7f86dac16940a6c6e3d73778cfe293dbd32d6208875ad2c4611a519d95d60fc",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.r": "1cb8bc58795f73ee0ecc31574e2b9ae5d148b9d99676592517fc2f81cde8b55f",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "8494f42969b911482e7069e733e21a8e4d971bb55e75e29430694d3a28ab84a6"
+  },
+  "extra": {
+    "n_fact": 25
+  },
+  "provenance_status": "backfilled",
+  "output_hashes": {
+    "csv": "103bf71c1619f6bd13fa6552314622b847531b6b2a8f955a775ee788092d0e00",
+    "rds": "12d6ea4c4b5132f710ef8158bd6fafd191f6a3a264a7a43f347adfeec6099b12"
+  },
+  "rebind_history": [
+    {
+      "rebound": [
+        "Rcode-QAIDR/QAIDR/analysis/scripts/scenario2.R",
+        "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R"
+      ],
+      "reason": "Stage 3 mechanical repairs; changes classified nonnumerical (case-exactness, guards, comments, assertions)",
+      "note": "input hashes only; packages/r_version/output_hashes untouched",
+      "when": "2026-08-16 02:26:53 +0800"
+    },
+    {
+      "action": "bind to immutable versioned source manifest",
+      "producing_qaidr_version": "0.2.0",
+      "manifest": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json",
+      "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
+      "note": "producing version preserved; packages/output_hashes untouched",
+      "when": "2026-08-16 09:01:05 +0800"
+    }
+  ]
+}

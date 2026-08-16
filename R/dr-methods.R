@@ -61,8 +61,9 @@ umap_config_strong <- function() {
 #' @export
 #' @examples
 #' \dontrun{
-#' data(cars_mm)
-#' x <- standardize(cars_mm)
+#' C <- matrix(rnorm(80), 20, 4)
+#' R <- matrix(runif(80, 0.05, 0.25), 20, 4)
+#' x <- standardize(interval_data(C, R))
 #' proj <- run_idr(x)
 #' }
 run_idr <- function(x,
@@ -91,6 +92,10 @@ run_idr <- function(x,
     if (!requireNamespace("dplyr", quietly = TRUE)) {
       stop("Package 'dplyr' is required for Int-UMAP. ",
            "Install with install.packages('dplyr').")
+    }
+    if (!requireNamespace("umap", quietly = TRUE)) {
+      stop("Package 'umap' is required for Int-UMAP. ",
+           "Install with install.packages('umap').")
     }
     tmp <- .to_mm_df(data_MM_array)
     if (!is.null(labels)) {
@@ -149,11 +154,25 @@ run_idr <- function(x,
           if (!requireNamespace("RSDA", quietly = TRUE)) {
             stop("Package 'RSDA' is required for Int-UMAP.")
           }
-          RSDA::sym.umap(s_tbl,
-                         n_components = umap_config$n_components %||% 2,
-                         n_neighbors  = umap_config$n_neighbors %||% 10,
-                         min_dist     = umap_config$min_dist %||% 0.01,
-                         spread       = umap_config$spread %||% 1.0)
+          if (!requireNamespace("umap", quietly = TRUE)) {
+            stop("Package 'umap' is required for Int-UMAP.")
+          }
+          ## RSDA (<= 3.2.5) sym.umap() accepts a `config` object and silently
+          ## ignores anything passed through `...`; it also overwrites
+          ## config$n_components with the number of expanded vertex columns.
+          ## Pass a config so the honored fields actually take effect, and
+          ## record the effective configuration on the result.
+          cfg <- umap::umap.defaults
+          for (nm in intersect(names(umap_config), names(cfg))) {
+            cfg[[nm]] <- umap_config[[nm]]
+          }
+          res_u <- RSDA::sym.umap(s_tbl, config = cfg)
+          attr(res_u, "effective_umap_config") <-
+            list(requested = umap_config, honored = cfg,
+                 note = paste("RSDA sym.umap overwrites n_components to the",
+                              "expanded vertex dimension; only V1/V2 are",
+                              "retained downstream."))
+          res_u
         }
       )
     })

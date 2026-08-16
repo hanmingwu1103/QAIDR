@@ -1,0 +1,51 @@
+{
+  "name": "h_tie_policy_audit",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/h_tie_policy_audit.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-19 23:57:54 +0800",
+  "elapsed_sec": 6644.87,
+  "max_gc_mb": 1322.3,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.3.0",
+    "dataSDA": "0.2.6",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.3.0.json": "0067105c5af08b2ff99e1bb37e88d5f1566a201e3f4ea7115a86946e4c7925b1"
+  },
+  "output_hashes": {
+    "csv": "cdf4428cf9f8c6b0dbc223851a9b3535d1f03fc4f6b68aca0c1807843f02e064",
+    "rds": "1cd11a7b687f3ecf891c996fe3b6e1d837e64fa7afd2919983d6f2ba2ac6bd4a"
+  },
+  "seeds": {},
+  "extra": {
+    "n_cells": 230,
+    "seed_rule": "priority seed 20260719+9000+cell_index; cell_index lexicographic (scenario, rep, method, metric)",
+    "material_threshold": "any displayed-value change at 3 decimals or conclusion change",
+    "prereg": "H_PREREGISTRATION.md sec 4 + A1.7 (post-A2)"
+  },
+  "rebind_history": [
+    {
+      "rebound": [
+        "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R"
+      ],
+      "reason": "Stage 3 mechanical repairs; changes classified nonnumerical (case-exactness, guards, comments, assertions)",
+      "note": "input hashes only; packages/r_version/output_hashes untouched",
+      "when": "2026-08-16 02:26:53 +0800"
+    },
+    {
+      "action": "bind to immutable versioned source manifest",
+      "producing_qaidr_version": "0.3.0",
+      "manifest": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.3.0.json",
+      "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
+      "note": "producing version preserved; packages/output_hashes untouched",
+      "when": "2026-08-16 09:01:05 +0800"
+    }
+  ]
+}

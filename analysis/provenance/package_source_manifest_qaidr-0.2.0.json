@@ -1,0 +1,24 @@
+{
+  "package": "QAIDR",
+  "version": "0.2.0",
+  "immutable": true,
+  "note": "Immutable source manifest for QAIDR 0.2.0 -- describes the source that produced artifacts recorded as this version. Never regenerate in place; create a new version-labelled manifest instead.",
+  "source_tree": "recovered from sadm_submission/qaidr-0.2.0-data-code-archive.zip",
+  "n_files": 13,
+  "created": "2026-08-16 09:00:16 +0800",
+  "files": {
+    "DESCRIPTION": "4da8b0ad086b15a29f1f25213c3f8b9483d7d22e335ecbb011a1af6b0a5cfd91",
+    "NAMESPACE": "3bca9387752835febc593088d12840d20db111032fb0103f902b81e0ffe1d152",
+    "R/assessment.R": "ee0e755c2c337e0b950da65d78e6f871db829d37c2506031338d232a3a583ca6",
+    "R/coranking.R": "cd2d2c0533402a0f70ec6f439029d3de16d5f6a477ad93b71d16f99eff180118",
+    "R/data.R": "4d88bba5bb876cbc91af3da42ecad7a9a0572492e406af31d11af2f6814ce28d",
+    "R/distances.R": "2bc1f9e40770a20279eaed492467446d393de5b366447244e88d93b415495af9",
+    "R/dr-methods.R": "22bc70627486fb611e735e10f606ee0a4b251fcb23685d0a356fae66b564d6ea",
+    "R/interval-data.R": "5b3c9d86d880c1281898c84dcfdc329bd1dc4b71362c30e74c5878200770177b",
+    "R/plotting.R": "d6599cd13204c80ff1410a50204593397ac463a0caa5b969e07dc7f2ccc61c1c",
+    "R/QAIDR-package.R": "8689b58e9d0f588b29c4c0d04a5d92e9293b72d950ff43f7b3fdbe4d7d22dacc",
+    "R/simulation.R": "7527394b66cf26f2418c9ff249a331b5bf20c1191ae4fc085bf06d01ada16353",
+    "R/utils-convert.R": "e35ca19385516bf9cd39b5b1e8be0b5636805482c664c24842faf021ef97ed4b",
+    "R/utils-format.R": "53bdc5f9aeacc57760a64b4cd4bf46841acdddf47ba6886444278a4b1c9d8c79"
+  }
+}

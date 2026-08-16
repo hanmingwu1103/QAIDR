@@ -1,0 +1,50 @@
+{
+  "name": "scenario2_calibration",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/regen_calibration.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-19 20:17:35 +0800",
+  "elapsed_sec": 9816.9063,
+  "max_gc_mb": 1141.2,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.3.0",
+    "dataSDA": "0.2.6",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.3.0.json": "0067105c5af08b2ff99e1bb37e88d5f1566a201e3f4ea7115a86946e4c7925b1"
+  },
+  "output_hashes": {
+    "csv": "757811f4649ef8f4e1e87ad1c6504276a8bc4d27a93aac96d37242f377643f81",
+    "rds": "a8f9e11dfbf66c99713193084e13bf3d65120e82a21714515d27bc938e747a56"
+  },
+  "seeds": {},
+  "extra": {
+    "m": 999,
+    "n_cal": 25,
+    "engine": "joint-draws shared across metrics (Westfall-Young corrected)"
+  },
+  "rebind_history": [
+    {
+      "rebound": [
+        "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R"
+      ],
+      "reason": "Stage 3 mechanical repairs; changes classified nonnumerical (case-exactness, guards, comments, assertions)",
+      "note": "input hashes only; packages/r_version/output_hashes untouched",
+      "when": "2026-08-16 02:26:53 +0800"
+    },
+    {
+      "action": "bind to immutable versioned source manifest",
+      "producing_qaidr_version": "0.3.0",
+      "manifest": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.3.0.json",
+      "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
+      "note": "producing version preserved; packages/output_hashes untouched",
+      "when": "2026-08-16 09:01:05 +0800"
+    }
+  ]
+}

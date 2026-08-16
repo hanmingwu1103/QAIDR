@@ -10,9 +10,8 @@ reference:
       - interval_data
       - interval_data_from_mm
       - interval_data_from_array
+      - interval_data_from_dataSDA
       - standardize
-      - cars_mm
-      - facedata_mm
 
   - title: "Distance Metrics"
     desc: "Interval distance functions for comparing interval-valued observations."
@@ -27,8 +26,13 @@ reference:
     desc: "Co-ranking indices, permutation tests, and K-profiles."
     contents:
       - coranking_indices
+      - rank_matrix
+      - coranking_matrix
+      - indices_from_coranking
       - assess_quality
       - perm_test
+      - perm_null_indices
+      - perm_null_indices_reference
       - k_profiles
 
   - title: "Dimensionality Reduction"

@@ -4,21 +4,24 @@
 \alias{idist_ichino_yaguchi}
 \title{Ichino-Yaguchi dissimilarity for intervals}
 \usage{
-idist_ichino_yaguchi(centers, radii, gamma = 0.5)
+idist_ichino_yaguchi(centers, radii, nu = 0.5, gamma = NULL)
 }
 \arguments{
 \item{centers}{Numeric matrix of interval midpoints (n x p).}
 
 \item{radii}{Numeric matrix of interval half-widths (n x p).}
 
-\item{gamma}{Weighting parameter (default 0.5).}
+\item{nu}{Span weight in the canonical Ichino-Yaguchi range \eqn{[0, 0.5]}
+(default 0.5); named \eqn{\nu} in the manuscript.}
+
+\item{gamma}{Deprecated alias for \code{nu}.}
 }
 \value{
 A symmetric n x n distance matrix.
 }
 \description{
 Computes the Ichino-Yaguchi dissimilarity between interval-valued
-observations based on intersection and union of intervals.
+observations based on the interval join (hull) and meet (intersection).
 }
 \examples{
 C <- matrix(rnorm(12), 4, 3)

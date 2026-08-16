@@ -1,0 +1,54 @@
+{
+  "name": "scenario2_warning_inventory",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/scenario2_warning_diagnostic.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-16 15:12:26 +0800",
+  "elapsed_sec": 1188.0124,
+  "max_gc_mb": 809.9,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenario2_warning_diagnostic.r": "44258c25ff43b9b42382c0cf0aaa32922a59eb269e5302bd4fcfd5f884c9e9f0",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.r": "1cb8bc58795f73ee0ecc31574e2b9ae5d148b9d99676592517fc2f81cde8b55f",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "8494f42969b911482e7069e733e21a8e4d971bb55e75e29430694d3a28ab84a6"
+  },
+  "output_hashes": {
+    "csv": "0bed408a50f72297d192531618764eeea55da51c0fbfa9c99c42b5946aa9f091",
+    "rds": "6fe0f8cc6b17132b64edc03b5799b04bbad37c23fb72bdb5e2d4b2fb4753f24c"
+  },
+  "seeds": {},
+  "extra": {
+    "n_reps": 2,
+    "n_warnings": 2,
+    "unclassified": 0
+  },
+  "rebind_history": [
+    {
+      "rebound": [
+        "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R",
+        "Rcode-QAIDR/QAIDR/analysis/scripts/scenario2_warning_diagnostic.R",
+        "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R"
+      ],
+      "reason": "Stage 3 mechanical repairs; changes classified nonnumerical (case-exactness, guards, comments, assertions)",
+      "note": "input hashes only; packages/r_version/output_hashes untouched",
+      "when": "2026-08-16 02:26:53 +0800"
+    },
+    {
+      "action": "bind to immutable versioned source manifest",
+      "producing_qaidr_version": "0.2.0",
+      "manifest": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json",
+      "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
+      "note": "producing version preserved; packages/output_hashes untouched",
+      "when": "2026-08-16 09:01:05 +0800"
+    }
+  ]
+}

@@ -86,3 +86,18 @@ test_that("distance functions are non-negative", {
   expect_true(all(idist_ichino_yaguchi(C, R) >= 0))
   expect_true(all(idist_wasserstein(C, R) >= 0))
 })
+
+# ---- Prompt E (2026-07-17): exported lambda validation --------------------
+
+test_that("idist_euclidean validates lambda directly", {
+  C <- matrix(rnorm(12), 4, 3)
+  R <- matrix(runif(12, 0.1, 0.5), 4, 3)
+  expect_error(idist_euclidean(C, R, lambda = -0.1), "lambda")
+  expect_error(idist_euclidean(C, R, lambda = 1.1), "lambda")
+  expect_error(idist_euclidean(C, R, lambda = NA_real_), "lambda")
+  expect_error(idist_euclidean(C, R, lambda = Inf), "lambda")
+  expect_error(idist_euclidean(C, R, lambda = "0.5"), "lambda")
+  expect_error(idist_euclidean(C, R, lambda = c(0.2, 0.4)), "lambda")
+  expect_silent(idist_euclidean(C, R, lambda = 0))
+  expect_silent(idist_euclidean(C, R, lambda = 1))
+})

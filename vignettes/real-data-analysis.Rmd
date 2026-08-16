@@ -1,8 +1,8 @@
 ---
-title: "Real Data Analysis with QAIDR"
+title: "Real-Data Examples with QAIDR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Real Data Analysis with QAIDR}
+  %\VignetteIndexEntry{Real-Data Examples with QAIDR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,136 +17,114 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette reproduces the real data analysis from the QAIDR paper, applying
-six interval dimensionality reduction methods to the Cars and Face datasets and
-evaluating them with co-ranking quality and behavior indices.
+This vignette demonstrates the QAIDR workflow with the `cars.int` and
+`face.iGAP` datasets distributed by the CRAN package `dataSDA`. It is a
+package tutorial, not an exact reproduction of the manuscript. The paper's
+real-data study uses Face and a 645-station USHCN dataset; its seeded scripts,
+frozen processed data, and outputs are documented in the GitHub
+`README_REPRODUCIBILITY.md` file.
 
-**Prerequisites:** The DR methods require `symbolicDA`, `RSDA`, and `umap`
-packages. Install them with:
+The DR wrappers require `symbolicDA`; Int-UMAP additionally requires `RSDA`,
+`umap`, and `dplyr`.
 
-```{r install, eval = FALSE}
-install.packages(c("symbolicDA", "RSDA", "umap"))
+```{r install}
+install.packages(c("dataSDA", "symbolicDA", "RSDA", "umap", "dplyr"))
 ```
 
-## Cars Dataset
+## Cars data
 
-The Cars dataset contains 27 car models described by 4 interval-valued
-variables (Price, Engine Capacity, Top Speed, Acceleration) with 4 class
-labels (Berlina, Luxury, Sportive, Utilitarian).
+`cars.int` contains 27 car models, four interval-valued variables (Price,
+Engine Capacity, Top Speed, and Acceleration), and a class variable. The
+conversion keeps the model names stored in the data's `concept` attribute and
+uses the singleton symbolic sets in `class` as labels.
 
 ```{r cars-setup}
 library(QAIDR)
-set.seed(2025)
+data("cars.int", package = "dataSDA")
 
-data(cars_mm)
-print(cars_mm)
-summary(cars_mm)
+cars <- interval_data_from_dataSDA(cars.int)
+print(cars)
+summary(cars)
+x_cars <- standardize(cars)
 ```
 
-### Standardize
-
-```{r cars-std}
-x <- standardize(cars_mm)
-```
-
-### Run all 6 DR methods
+Run the available DR methods and inspect the projected rectangles:
 
 ```{r cars-dr}
-proj <- run_idr(x, labels = cars_mm$labels)
-print(proj)
+set.seed(20260718)
+proj_cars <- run_idr(x_cars)
+plot_projections(proj_cars, labels = cars$labels,
+                 obs_labels = rownames(cars$centers))
 ```
 
-### 2D projection plots
-
-Each DR method produces a 2D projection where intervals are displayed as
-rectangles:
-
-```{r cars-proj, fig.width = 12, fig.height = 8}
-plot_projections(proj,
-                 labels = cars_mm$labels,
-                 obs_labels = rownames(cars_mm$centers))
-```
-
-### Quality assessment with permutation tests
-
-Evaluate all 6 methods across 4 metrics at neighbourhood size K = 5, with
-1000 permutations for significance testing:
+Assess every method--dissimilarity pair at `K = 5`. The center-only row is an
+essential comparison: it shows whether interval widths add assessment
+information beyond the midpoints alone. The default 999 permutations permit
+finite-sample p-values below 0.05, and `pvalues_adj` contains the within-family
+symmetric randomization min-P adjustment.
 
 ```{r cars-assess}
-result <- assess_quality(x, proj, K = 5,
-                         perm_test = TRUE, n_perm = 1000)
-print(result)
+cars_assessment <- assess_quality(
+  x_cars, proj_cars, K = 5,
+  perm_test = TRUE, n_perm = 999,
+  seed = 20260719, baseline = TRUE
+)
+print(cars_assessment)
+cars_assessment$pvalues_adj
 ```
 
-An asterisk (`*`) indicates statistical significance at the 0.05 level.
+Quality and behavior can also be inspected across neighborhood sizes:
 
-### K-neighbourhood profiles
-
-Quality and behavior indices across all neighbourhood sizes K:
-
-```{r cars-profiles, fig.width = 12, fig.height = 9}
-profiles <- k_profiles(x, proj)
-
-# Plot for each metric
-for (met in c("Int-Euclidean", "Hausdorff", "Ichino-Yaguchi", "Wasserstein")) {
-  plot_k_profiles(profiles, metric = met)
-}
+```{r cars-profiles}
+cars_profiles <- k_profiles(x_cars, proj_cars, K_max = 20, baseline = TRUE)
+plot_k_profiles(cars_profiles, metric = "Wasserstein")
 ```
 
-## Face Dataset
+## Face data
 
-The Face dataset contains 27 individuals described by 6 interval-valued
-anthropometric measurements (AD, BC, AH, DH, EH, GH).
+`face.iGAP` contains six interval-valued anthropometric measurements for
+27 records. Its row names identify nine people with three replicates each; we
+derive the person labels by removing the trailing replicate number.
 
 ```{r face-setup}
-data(facedata_mm)
-print(facedata_mm)
+data("face.iGAP", package = "dataSDA")
+face_labels <- sub("[[:digit:]]+$", "", rownames(face.iGAP))
+face <- interval_data_from_dataSDA(face.iGAP, labels = face_labels)
+x_face <- standardize(face)
+print(face)
 ```
 
-### Standardize and run DR
+```{r face-analysis}
+set.seed(20260720)
+proj_face <- run_idr(x_face)
+plot_projections(proj_face, labels = face$labels,
+                 obs_labels = rownames(face$centers))
 
-```{r face-dr}
-x_face <- standardize(facedata_mm)
-proj_face <- run_idr(x_face, labels = facedata_mm$labels)
+face_assessment <- assess_quality(
+  x_face, proj_face, K = 5,
+  perm_test = TRUE, n_perm = 999,
+  seed = 20260721, baseline = TRUE
+)
+print(face_assessment)
+
+face_profiles <- k_profiles(x_face, proj_face, K_max = 20, baseline = TRUE)
+plot_k_profiles(face_profiles, metric = "Wasserstein")
 ```
 
-### Projection plots
+## Interpreting the indices
 
-```{r face-proj, fig.width = 12, fig.height = 8}
-plot_projections(proj_face,
-                 labels = facedata_mm$labels,
-                 obs_labels = rownames(facedata_mm$centers))
-```
+| Index | Type | Interpretation |
+|:------|:-----|:---------------|
+| Q_TC | Quality | Average of trustworthiness and continuity |
+| B_TC | Behavior | Continuity minus trustworthiness |
+| Q_RE | Quality | One minus the average relative rank error |
+| B_RE | Behavior | Intrusion error minus extrusion error |
+| Q_LC | Quality | Fraction of K-neighbors preserved |
+| B_LC | Behavior | Bounded local intrusion--extrusion asymmetry |
 
-### Quality assessment
-
-```{r face-assess}
-result_face <- assess_quality(x_face, proj_face, K = 5,
-                              perm_test = TRUE, n_perm = 1000)
-print(result_face)
-```
-
-### K-neighbourhood profiles
-
-```{r face-profiles, fig.width = 12, fig.height = 9}
-profiles_face <- k_profiles(x_face, proj_face)
-plot_k_profiles(profiles_face, metric = "Wasserstein")
-```
-
-## Interpreting Results
-
-The assessment table reports six indices for each method-metric combination:
-
-| Index | Type | Range | Interpretation |
-|-------|------|-------|----------------|
-| Q_TC | Quality | [0, 1] | Average of Trustworthiness and Continuity |
-| B_TC | Behavior | [-1, 1] | Continuity - Trustworthiness (+ = extrusion-dominant) |
-| Q_RE | Quality | [0, 1] | 1 - average relative rank error |
-| B_RE | Behavior | [-1, 1] | Intrusion error - Extrusion error |
-| Q_LC | Quality | [0, 1] | Fraction of K-neighbours preserved |
-| B_LC | Behavior | [-1, 1] | Asymmetry in local continuity |
-
-**Quality indices** closer to 1 indicate better structure preservation.
-**Behavior indices** near 0 indicate balanced intrusions and extrusions;
-large positive or negative values indicate directional bias in the
-embedding.
+Higher quality values indicate better neighborhood preservation. Behavior
+values near zero indicate balance; positive values consistently indicate an
+intrusion-dominated embedding, and negative values indicate an
+extrusion-dominated embedding. Interpret isolated values together with their
+K-profiles, tie diagnostics, center-only baseline, and adjusted permutation
+results.

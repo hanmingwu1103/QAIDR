@@ -1,0 +1,50 @@
+{
+  "name": "stage4v3b_audit_m999",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/stage4_audit_v3b.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 00:10:08 +0800",
+  "elapsed_sec": 1234.3497,
+  "max_gc_mb": 151.5,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "8494f42969b911482e7069e733e21a8e4d971bb55e75e29430694d3a28ab84a6"
+  },
+  "output_hashes": {
+    "csv": "a1cc7c5d78000fa94021d809d98db0a1535b2ec29b15315a96371361c4474e27",
+    "rds": "e9194a017c82488b7ac8f0eb3adfb0671f746a397d9e0e7885a419680c9ee81d"
+  },
+  "seeds": {},
+  "extra": {
+    "n_rep": 2000,
+    "m": 999,
+    "seed_stream": "SEED_BASE+9.7e6/9.8e6+r",
+    "motivation": "m=199 audit anti-conservative; production m=999 audited"
+  },
+  "rebind_history": [
+    {
+      "rebound": [
+        "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R"
+      ],
+      "reason": "Stage 3 mechanical repairs; changes classified nonnumerical (case-exactness, guards, comments, assertions)",
+      "note": "input hashes only; packages/r_version/output_hashes untouched",
+      "when": "2026-08-16 02:26:53 +0800"
+    },
+    {
+      "action": "bind to immutable versioned source manifest",
+      "producing_qaidr_version": "0.2.0",
+      "manifest": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json",
+      "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
+      "note": "producing version preserved; packages/output_hashes untouched",
+      "when": "2026-08-16 09:01:05 +0800"
+    }
+  ]
+}

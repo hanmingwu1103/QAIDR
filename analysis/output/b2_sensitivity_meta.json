@@ -1,0 +1,49 @@
+{
+  "name": "b2_sensitivity",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/b2_sensitivity.R",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-07-17 14:32:21 +0800",
+  "elapsed_sec": 967.7931,
+  "max_gc_mb": 450.2,
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.2.0",
+    "symbolicDA": "0.6.2",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "8494f42969b911482e7069e733e21a8e4d971bb55e75e29430694d3a28ab84a6"
+  },
+  "output_hashes": {
+    "csv": "ece323ca6e9a7e0f2c5ce85bced6a97455d3ee5815b9d7bfa8fe1528982feff4",
+    "rds": "2ccb71abea7d1a04ddcabbf562596a103dcc988893acfdd30b9e8cf0bb834b29"
+  },
+  "seeds": {},
+  "extra": {
+    "prereg_sha256": "2c25e3b2d39ee824043fdf5261e299f13773c5a7734799f7f35ba6257f2df67a",
+    "guidance_rule": "adequate iff max range over ALL methods < 0.02 on exact Face profiles; grid arm descriptive only",
+    "exceptional_contract": "Prompt E 2026-07-17: internal/boundary/tangency/persistent classification; ranges over tie-free open cells + nonexceptional endpoints"
+  },
+  "rebind_history": [
+    {
+      "rebound": [
+        "Rcode-QAIDR/QAIDR/analysis/scripts/_common.R"
+      ],
+      "reason": "Stage 3 mechanical repairs; changes classified nonnumerical (case-exactness, guards, comments, assertions)",
+      "note": "input hashes only; packages/r_version/output_hashes untouched",
+      "when": "2026-08-16 02:26:53 +0800"
+    },
+    {
+      "action": "bind to immutable versioned source manifest",
+      "producing_qaidr_version": "0.2.0",
+      "manifest": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json",
+      "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
+      "note": "producing version preserved; packages/output_hashes untouched",
+      "when": "2026-08-16 09:01:05 +0800"
+    }
+  ]
+}

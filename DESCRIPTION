@@ -1,20 +1,24 @@
 Package: QAIDR
 Title: Quality Assessment for Interval-Based Dimensionality Reduction
-Version: 0.1.0
+Version: 0.3.0
 Authors@R:
-    person("Han-Ming", "Wu", , "hmwu@stat.ntpu.edu.tw", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-0656-374X"))
-Description: Provides quality and behavior indices for evaluating
-    interval-based dimensionality reduction (DR) methods using co-ranking
-    matrices. Supports multiple interval distance metrics (Euclidean,
-    Hausdorff, Ichino-Yaguchi, L2-Wasserstein) and assessment criteria
-    (Trustworthiness & Continuity, MRRE, LCMC). Includes wrappers for
-    symbolic PCA methods, interval MDS, and interval UMAP, as well as
-    permutation tests for statistical significance.
+    c(person("Paulo Canas", "Rodrigues", role = "aut",
+             comment = c(ORCID = "0000-0002-1248-9910")),
+      person("Han-Ming", "Wu", , "wuhm@g.nccu.edu.tw",
+             role = c("aut", "cre"),
+             comment = c(ORCID = "0000-0002-0656-374X")))
+Description: Implements co-ranking quality and behavior indices for assessing
+    dimensionality-reduction embeddings of interval-valued data. The
+    framework combines interval dissimilarities, self-excluded ranks,
+    neighborhood profiles, center-only baselines, and permutation inference.
+    It provides corrected trustworthiness and continuity, mean relative rank
+    error, and local continuity meta-criteria following Lee and Verleysen
+    (2009) <doi:10.1016/j.neucom.2008.12.017>, together with wrappers for
+    symbolic principal component analysis, interval multidimensional scaling,
+    and interval uniform manifold approximation and projection.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Depends:
     R (>= 3.5.0)
 Imports:
@@ -25,20 +29,17 @@ Imports:
     stats,
     utils
 Suggests:
+    dataSDA,
     symbolicDA,
     RSDA,
     umap,
-    MASS,
-    vegan,
-    ggforce,
     dplyr,
-    stringr,
     testthat (>= 3.0.0),
     knitr,
     rmarkdown
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-LazyData: true
 URL: https://hanmingwu1103.github.io/QAIDR/,
     https://github.com/hanmingwu1103/QAIDR
 BugReports: https://github.com/hanmingwu1103/QAIDR/issues
+Config/roxygen2/version: 8.0.0

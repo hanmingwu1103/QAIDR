@@ -9,3 +9,16 @@
 ^docs$
 ^_build_site\.R$
 ^pkgdown$
+^analysis$
+^README_REPRODUCIBILITY\.md$
+^cran-comments\.md$
+^\.gitattributes$
+^git$
+^github$
+^%SystemDrive%$
+^[Qq][Aa][Ii][Dd][Rr]\.Rcheck$
+^[Qq][Aa][Ii][Dd][Rr]_.*\.tar\.gz$
+^\.beads$
+^bak$
+^claude$
+^lib_h$

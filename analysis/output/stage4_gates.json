@@ -1,0 +1,65 @@
+{
+  "schema": "stage4-gate-v2",
+  "created": "2026-07-16 14:01:26 +0800",
+  "engine": "joint-draw Westfall-Young min-P",
+  "assessment_R_sha256": "ee0e755c2c337e0b950da65d78e6f871db829d37c2506031338d232a3a583ca6",
+  "package_version": "0.2.0",
+  "design": {
+    "n_rep": 200,
+    "n": 60,
+    "K": 5,
+    "m": 199,
+    "alpha": 0.05,
+    "metrics": ["Int-Euclidean", "Hausdorff", "Ichino-Yaguchi", "Wasserstein", "Centers-Euclidean"],
+    "baseline": true,
+    "families": {
+      "TC": ["Q_TC", "B_TC"],
+      "RE": ["Q_RE", "B_RE"],
+      "LC": ["Q_LC", "B_LC"]
+    },
+    "seed_rule": "data SEED_BASE+20/+1; null embeddings SEED_BASE+5e6+r; permutations SEED_BASE+6e6+r"
+  },
+  "per_test_rates": {
+    "Q_TC": [0.05, 0.055, 0.07, 0.06, 0.06],
+    "B_TC": [0.055, 0.06, 0.075, 0.065, 0.04],
+    "Q_RE": [0.055, 0.08, 0.075, 0.07, 0.03],
+    "B_RE": [0.06, 0.05, 0.03, 0.045, 0.035],
+    "Q_LC": [0.045, 0.055, 0.055, 0.045, 0.04],
+    "B_LC": [0.04, 0.015, 0.025, 0.04, 0.025]
+  },
+  "familywise_rates": {
+    "TC": 0.08,
+    "RE": 0.065,
+    "LC": 0.045
+  },
+  "familywise_ci_halfwidth_95": 0.030206,
+  "acceptance_rule": "every familywise rate within 4 binomial SEs of alpha; per-test rates <= alpha + 4 SE",
+  "gates": {
+    "null_expectation": true,
+    "per_test_type1": true,
+    "familywise_type1": true
+  },
+  "null_check": {
+    "means": {
+      "Q_TC": 0.515546,
+      "B_TC": 0.000541,
+      "Q_RE": 0.507006,
+      "B_RE": 0.000281,
+      "Q_LC": 0.084483,
+      "B_LC": 0.000061
+    },
+    "mc_se": {
+      "Q_TC": 0.000288,
+      "B_TC": 0.000435,
+      "Q_RE": 0.000307,
+      "B_RE": 0.000514,
+      "Q_LC": 0.000291,
+      "B_LC": 0.000246
+    },
+    "expected_Q_LC": 0.084746
+  },
+  "calibration_csv": "stage4v2_calibration_per_rep.csv",
+  "calibration_csv_sha256": "86d4d4503dbca1feaf21d9f61a45920e660046e4ef6e72c0d12396f4ffa19623",
+  "runtime_sec": 86.363867,
+  "overall_pass": true
+}

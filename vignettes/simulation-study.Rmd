@@ -1,8 +1,8 @@
 ---
-title: "Simulation Study with QAIDR"
+title: "A Simulation Workflow with QAIDR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Simulation Study with QAIDR}
+  %\VignetteIndexEntry{A Simulation Workflow with QAIDR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,212 +17,121 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette reproduces the simulation study from the QAIDR paper. Three
-scenarios test different aspects of the quality and behavior indices.
+This vignette gives a compact template for designing and evaluating a
+simulation with QAIDR. It is intentionally small and is not an exact
+reproduction of the manuscript study. The complete study contains four
+scenarios: width-structured groups, a nonlinear-manifold factorial design,
+repeated endpoint perturbations, and an adversarial joint-stress design with
+unequal clusters, center--width coupling, contamination, forced ties, and
+rotated-frame misspecification.
 
-**Prerequisites:** Requires `symbolicDA`, `RSDA`, and `umap` packages.
+The full seeded designs, 100-replication outputs, Monte Carlo uncertainty,
+K-profile robustness checks, parameter-sensitivity analysis, and calibration
+gates are available under `analysis/` in the GitHub repository. See
+`README_REPRODUCIBILITY.md` before attempting the full run.
 
-## Common Setup
+## Generate interval-valued observations
 
-```{r common-setup}
+The example below separates center structure from width structure. This makes
+the center-only baseline scientifically interpretable: a difference between
+an interval-metric row and the baseline measures information that cannot be
+attributed to midpoints alone.
+
+```{r generate}
 library(QAIDR)
-set.seed(2025)
+set.seed(20260718)
 
-methods_list <- c("C-PCA", "V-PCA", "MR-PCA", "SPCA", "IMDS", "Int-UMAP")
-metrics_list <- c("Int-Euclidean", "Hausdorff", "Ichino-Yaguchi", "Wasserstein")
+n <- 120
+p <- 5
+group <- factor(rep(c("narrow", "wide"), each = n / 2))
 
-# Set N_PERM = 1000 for final paper results
-N_PERM <- 10
+centers <- matrix(rnorm(n * p), n, p)
+radii <- matrix(runif(n * p, 0.05, 0.15), n, p)
+radii[group == "wide", ] <- matrix(
+  runif(sum(group == "wide") * p, 0.7, 1.0),
+  sum(group == "wide"), p
+)
+
+colnames(centers) <- colnames(radii) <- paste0("V", seq_len(p))
+x <- standardize(interval_data(centers, radii, labels = group))
 ```
 
-## Scenario I: Varying Variability
+## Define candidate embeddings
 
-Tests how the indices respond to different radii magnitudes. Three groups of
-100 observations each have small, medium, and large interval widths.
+For an algorithm study, replace these illustrative projections with outputs
+from `run_idr()` or another DR implementation. The first projection retains
+both centers and radii in the first two coordinates. The second discards
+widths, while the third deliberately permutes the interval widths to create a
+diagnostic failure.
 
-```{r scenario1-data}
-N <- 300; P <- 5
-centers <- matrix(rnorm(N * P), N, P)
-radii <- matrix(0, N, P)
+```{r embeddings}
+set.seed(20260719)
+bad_order <- sample.int(n)
 
-# Group 1: Small radii (0.1 -- 0.2)
-radii[1:100, ] <- matrix(runif(100 * P, 0.1, 0.2), 100, P)
-# Group 2: Medium radii (1.0 -- 1.2)
-radii[101:200, ] <- matrix(runif(100 * P, 1.0, 1.2), 100, P)
-# Group 3: Large radii (5.0 -- 6.0)
-radii[201:300, ] <- matrix(runif(100 * P, 5.0, 6.0), 100, P)
-
-colnames(centers) <- paste0("V", seq_len(P))
-colnames(radii) <- paste0("V", seq_len(P))
-
-x_s1 <- interval_data(centers, radii)
-x_s1_std <- standardize(x_s1)
+projections <- structure(list(
+  `Interval projection` = list(
+    C = x$centers[, 1:2, drop = FALSE],
+    R = x$radii[, 1:2, drop = FALSE],
+    type = "Interval"
+  ),
+  `Center-only projection` = list(
+    C = x$centers[, 1:2, drop = FALSE],
+    R = matrix(0, n, 2),
+    type = "Point"
+  ),
+  `Width-permuted projection` = list(
+    C = x$centers[, 1:2, drop = FALSE],
+    R = x$radii[bad_order, 1:2, drop = FALSE],
+    type = "Interval"
+  )
+), class = "idr_projections")
 ```
 
-### Run DR and evaluate
+## Assess quality, behavior, and the baseline
 
-```{r scenario1-run}
-proj_s1 <- run_idr(x_s1_std)
+Use 999 permutations for inferential results. QAIDR applies the finite-sample
+formula `(c + 1) / (m + 1)` and reports within-family symmetric randomization
+min-P adjustments. For exploratory debugging, a smaller number may be used only if
+the resulting p-values are not interpreted as final evidence.
 
-res_s1 <- data.frame()
-for (met in methods_list) {
-  cat("Processing:", met, "\n")
-  out <- proj_s1[[met]]
-
-  for (metric in metrics_list) {
-    Dh <- idist(x_s1_std, metric = metric)
-    Dl <- if (out$type == "Point") {
-      as.matrix(dist(out$C))
-    } else {
-      idist(out$C, out$R, metric)
-    }
-
-    pt <- perm_test(Dh, Dl, K = 10, n_perm = N_PERM)
-    res_s1 <- rbind(res_s1, data.frame(
-      Method = met, Metric = metric,
-      Q_TC = sprintf("%.3f", pt$vals["Q_TC"]),
-      B_TC = sprintf("%.3f", pt$vals["B_TC"]),
-      Q_RE = sprintf("%.3f", pt$vals["Q_RE"]),
-      B_RE = sprintf("%.3f", pt$vals["B_RE"]),
-      Q_LC = sprintf("%.3f", pt$vals["Q_LC"]),
-      B_LC = sprintf("%.3f", pt$vals["B_LC"])
-    ))
-  }
-}
-print(res_s1)
+```{r assess}
+assessment <- assess_quality(
+  x, projections, K = 10,
+  perm_test = TRUE, n_perm = 999,
+  seed = 20260720, baseline = TRUE
+)
+print(assessment)
+assessment$pvalues_adj
 ```
 
-Or more concisely with `assess_quality()`:
+The key comparison is not simply which row has the largest value. Check
+whether the interval metrics distinguish the width-permuted projection when
+the center-only baseline cannot, and report uncertainty across independently
+generated datasets rather than treating one realization as conclusive.
 
-```{r scenario1-concise}
-result_s1 <- assess_quality(x_s1_std, proj_s1, K = 10,
-                            perm_test = TRUE, n_perm = N_PERM)
-print(result_s1)
+## Inspect neighborhood-scale sensitivity
+
+```{r profiles}
+profiles <- k_profiles(x, projections, K_max = 30, baseline = TRUE)
+plot_k_profiles(profiles, metric = "Wasserstein")
 ```
 
-## Scenario II: Interval Swiss Roll
+Stable conclusions near the prespecified primary K are more persuasive than a
+single optimized neighborhood size. Behavior values should also be inspected:
+positive values indicate intrusion dominance, negative values indicate
+extrusion dominance, and values near zero indicate balance.
 
-Tests how well DR methods preserve the structure of a nonlinear manifold
-when data are interval-valued.
+## Recommended reporting checklist
 
-```{r scenario2-data}
-dat_sr <- gen_interval_swissroll(n = 800, seed = 42)
-print(dat_sr)
-```
-
-### Standardize and run DR
-
-```{r scenario2-run}
-dat_sr_std <- standardize(dat_sr)
-proj_sr <- run_idr(dat_sr_std)
-
-res_s2 <- data.frame()
-for (met in methods_list) {
-  cat("Processing:", met, "\n")
-  out <- proj_sr[[met]]
-
-  for (metric in metrics_list) {
-    Dh <- idist(dat_sr_std, metric = metric)
-    Dl <- if (out$type == "Point") {
-      as.matrix(dist(out$C))
-    } else {
-      idist(out$C, out$R, metric)
-    }
-
-    pt <- perm_test(Dh, Dl, K = 10, n_perm = N_PERM)
-    res_s2 <- rbind(res_s2, data.frame(
-      Method = met, Metric = metric,
-      Q_TC = sprintf("%.3f", pt$vals["Q_TC"]),
-      B_TC = sprintf("%.3f", pt$vals["B_TC"]),
-      Q_RE = sprintf("%.3f", pt$vals["Q_RE"]),
-      B_RE = sprintf("%.3f", pt$vals["B_RE"]),
-      Q_LC = sprintf("%.3f", pt$vals["Q_LC"]),
-      B_LC = sprintf("%.3f", pt$vals["B_LC"])
-    ))
-  }
-}
-print(res_s2)
-```
-
-## Scenario III: Stability Analysis
-
-Tests robustness of indices under small perturbations of interval radii.
-Mean Absolute Error (MAE) and sign-flip rates are computed over 100
-iterations.
-
-```{r scenario3-setup}
-N <- 200; P <- 5; K <- 10; N_ITER <- 100
-center_sd <- 0.05; r_min <- 1.2; r_max <- 2.5; eps <- 0.25
-
-# Generate base data with dense overlap
-centers_base <- matrix(rnorm(N * P, mean = 0, sd = center_sd), N, P)
-radii_base <- matrix(runif(N * P, r_min, r_max), N, P)
-colnames(centers_base) <- paste0("V", seq_len(P))
-colnames(radii_base) <- paste0("V", seq_len(P))
-
-x_base <- interval_data(centers_base, radii_base)
-xs_base <- standardize(x_base)
-proj_base <- run_idr(xs_base)
-```
-
-### Compute MAE and sign-flip rates
-
-```{r scenario3-run}
-stability <- data.frame()
-
-for (met in names(proj_base)) {
-  for (mn in metrics_list) {
-    # Baseline indices
-    Dh0 <- idist(xs_base, metric = mn)
-    out <- proj_base[[met]]
-    Dl <- if (out$type == "Point") {
-      as.matrix(dist(out$C))
-    } else {
-      idist(out$C, out$R, mn)
-    }
-    base_vals <- coranking_indices(Dh0, Dl, K = K)
-
-    # Perturb radii N_ITER times
-    vals <- matrix(NA, nrow = N_ITER, ncol = 6)
-    for (i in seq_len(N_ITER)) {
-      mult_noise <- matrix(runif(N * P, -eps, eps), N, P)
-      r_pert <- radii_base * (1 + mult_noise)
-      r_pert[r_pert < 1e-8] <- 1e-8
-      Dh <- idist(centers_base, r_pert, mn)
-      vals[i, ] <- coranking_indices(Dh, Dl, K = K)
-    }
-
-    # MAE
-    mae <- colMeans(abs(vals - matrix(base_vals, nrow = N_ITER,
-                                      ncol = 6, byrow = TRUE)))
-
-    # Sign-flip rate for behavior indices (columns 2, 4, 6)
-    sign_flip <- c(
-      mean(sign(vals[, 2]) != sign(base_vals[2])),
-      mean(sign(vals[, 4]) != sign(base_vals[4])),
-      mean(sign(vals[, 6]) != sign(base_vals[6]))
-    )
-
-    stability <- rbind(stability, data.frame(
-      Method = met, Metric = mn,
-      MAE_Q_TC = mae[1], MAE_B_TC = mae[2],
-      MAE_Q_RE = mae[3], MAE_B_RE = mae[4],
-      MAE_Q_LC = mae[5], MAE_B_LC = mae[6],
-      SignFlip_B_TC = sign_flip[1],
-      SignFlip_B_RE = sign_flip[2],
-      SignFlip_B_LC = sign_flip[3]
-    ))
-  }
-}
-
-print(stability)
-```
-
-## Notes
-
-- For reproducible paper results, set `N_PERM = 1000` and `N_ITER = 100`.
-- The `eval = FALSE` default avoids long computation during vignette building.
-  Copy the code into an R session with the required packages installed to
-  run interactively.
-- Scenario III is designed with dense overlap (`center_sd = 0.05`,
-  `r_min = 1.2`) to stress-test the stability of the indices.
+1. Prespecify the data-generating mechanisms, primary K, metrics, and
+   contrasts before viewing the index results.
+2. Include center-only baselines and negative controls that should show little
+   or no interval advantage.
+3. Repeat independent datasets and report standard deviations or Monte Carlo
+   standard errors.
+4. Audit exact and tolerance-detected ties; use seeded random resolution only
+   when structural ties are unavoidable.
+5. Report K-profiles and sensitivity to the interval-dissimilarity parameters
+   `lambda` and `nu` when conclusions depend on their defaults.
+6. Validate permutation calibration and multiplicity control under a null
+   design before attaching significance markers.

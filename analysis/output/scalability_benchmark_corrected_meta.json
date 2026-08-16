@@ -1,0 +1,42 @@
+{
+  "name": "scalability_benchmark_corrected",
+  "producer": "Rcode-QAIDR/QAIDR/analysis/scripts/benchmark_corrected.r",
+  "provenance_status": "contemporaneous",
+  "run_mode": "full",
+  "created": "2026-08-16 09:05:42 +0800",
+  "elapsed_sec": 73.6445,
+  "max_gc_mb": 368.1,
+  "r_version": "R version 4.6.0 (2026-04-24 ucrt)",
+  "packages": {
+    "QAIDR": "0.3.0",
+    "dataSDA": "0.2.6",
+    "symbolicDA": "0.7.3",
+    "RSDA": "3.2.5",
+    "umap": "0.2.10.0",
+    "coRanking": null
+  },
+  "release_stack_required": {
+    "R": "4.6.1",
+    "QAIDR": "0.3.0",
+    "symbolicDA": "0.6.2",
+    "coRanking": "0.2.5"
+  },
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "0a2babb1ef2543decb66e37606d39d60f98049808c25234d9ef22d3bbcf3b5fc"
+  },
+  "output_hashes": {
+    "csv": "7b774aef76bc4e1b7304d17317a925d5c12a829fb8fc35999432d3063aa98d8f",
+    "rds": "d420d3a138744f94ea56dda53ec895f1c9e7b14f2a2290b637f1ec31e35b9a45"
+  },
+  "seeds": {},
+  "extra": {
+    "sizes": [200, 500, 1000, 2000],
+    "reps": 5,
+    "supersedes": "scalability_benchmark",
+    "assessment_only": true,
+    "embedding_excluded": "DR/embedding time is excluded by design; see scalability_benchmark.csv for the stored per-method embedding timings",
+    "memory_note": "measured_peak_r_heap_MB is R's gc max-used high-water mark, a measurement; calculated_matrix_mem_MB is the 3*8*n^2 size calculation previously reported as if measured; os_peak_rss_MB is NA because OS-level RSS requires an external observer",
+    "m_note": "m=99 is the benchmark setting; m=999 is production inference"
+  }
+}

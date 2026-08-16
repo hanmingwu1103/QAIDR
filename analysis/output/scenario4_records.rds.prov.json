@@ -1,0 +1,14 @@
+{
+  "name": "scenario4_records.rds",
+  "provenance_status": "backfilled",
+  "created": "2026-07-16 22:01:15 +0800",
+  "input_hashes": {
+    "Rcode-QAIDR/QAIDR/analysis/scripts/b2_scenario4.R": "d1304e8d55e44f20adf4dc878b340fd7eab8b652d497bd52f6681ebcafa20a8c",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.R": "950264c970f1a8377799255e84b76082d98bab0aba28e943dae37c9e5810de23",
+    "Rcode-QAIDR/QAIDR/analysis/B2_PREREGISTRATION.md": "2c25e3b2d39ee824043fdf5261e299f13773c5a7734799f7f35ba6257f2df67a"
+  },
+  "output_hashes": {
+    "file": "d5d5e695e75c084038cdf80eb4f3112829931916fbcdd5850474c9e2e6e733d8"
+  },
+  "note": "sidecar added by b2_provenance_backfill.R"
+}
