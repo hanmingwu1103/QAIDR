@@ -16,11 +16,11 @@
   },
   "input_hashes": {
     "Rcode-QAIDR/QAIDR/analysis/B2_PREREGISTRATION.md": "2c25e3b2d39ee824043fdf5261e299f13773c5a7734799f7f35ba6257f2df67a",
-    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "270a65afba4c864e38de6f84e46b702382c672bc609143c5c5ab431b4d0ccb76",
-    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
-    "Rcode-QAIDR/QAIDR/analysis/scripts/b2_scenario4.r": "3fd2490235de4846fb3bd42ef5e690a0b4aa586b6b4a28e7ce1f52250c3520a5",
-    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.r": "1cb8bc58795f73ee0ecc31574e2b9ae5d148b9d99676592517fc2f81cde8b55f",
-    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "8494f42969b911482e7069e733e21a8e4d971bb55e75e29430694d3a28ab84a6"
+    "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json": "5339306f9167b8195207ffc47c3d864600634ca5c1cb08d9598456a8fe34a132",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "9e5ca8791c2554a985306e353c6aea926c0e06417aed9b0ce930ca405c01def0",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/b2_scenario4.r": "e73206640551228a9b898b724e927122d690a3ec5400d2732ad3147768e9134a",
+    "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.r": "4ef357ed4f149af86094c0387ccc6c1082f7572a8d969807d2f21e37a5ad6515",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "393cb1df392dee5d559d19712c696375309d60077e8d07bb1a5ba50421481155"
   },
   "output_hashes": {
     "csv": "dba26082b28322e6e917e6c913e910beb4db5aa8d8015e5bfd68eeff6fad373a",
@@ -46,6 +46,18 @@
       "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
       "note": "producing version preserved; packages/output_hashes untouched",
       "when": "2026-08-16 09:01:05 +0800"
+    },
+    {
+      "action": "refresh input hashes after LF normalization",
+      "fields": [
+        "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json",
+        "Rcode-QAIDR/QAIDR/analysis/provenance/seed_manifest.json",
+        "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r",
+        "Rcode-QAIDR/QAIDR/analysis/scripts/b2_scenario4.r",
+        "Rcode-QAIDR/QAIDR/analysis/scripts/scenarios.r"
+      ],
+      "note": "line-ending-only change; verified recorded hash equals the CRLF form of the same bytes",
+      "when": "2026-08-16 09:30:25 +0800"
     }
   ]
 }

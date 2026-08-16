@@ -15,8 +15,8 @@
     "coRanking": "0.2.5"
   },
   "input_hashes": {
-    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
-    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "8494f42969b911482e7069e733e21a8e4d971bb55e75e29430694d3a28ab84a6"
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "9e5ca8791c2554a985306e353c6aea926c0e06417aed9b0ce930ca405c01def0",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json": "393cb1df392dee5d559d19712c696375309d60077e8d07bb1a5ba50421481155"
   },
   "output_hashes": {
     "csv": "ece323ca6e9a7e0f2c5ce85bced6a97455d3ee5815b9d7bfa8fe1528982feff4",
@@ -44,6 +44,15 @@
       "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
       "note": "producing version preserved; packages/output_hashes untouched",
       "when": "2026-08-16 09:01:05 +0800"
+    },
+    {
+      "action": "refresh input hashes after LF normalization",
+      "fields": [
+        "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.2.0.json",
+        "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r"
+      ],
+      "note": "line-ending-only change; verified recorded hash equals the CRLF form of the same bytes",
+      "when": "2026-08-16 09:30:24 +0800"
     }
   ]
 }

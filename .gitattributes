@@ -12,3 +12,11 @@ analysis/output/*_sessionInfo.txt whitespace=-blank-at-eol
 *.png binary
 *.zip binary
 *.tar.gz binary
+
+# Archived analysis outputs are SCIENTIFIC DATA and must be preserved exactly as
+# produced. Their SHA-256 hashes are recorded in per-output provenance sidecars,
+# so any end-of-line conversion would silently invalidate the provenance chain.
+# Never normalize them.
+analysis/output/** -text
+analysis/data-processed/** -text
+analysis/data-raw/** -text

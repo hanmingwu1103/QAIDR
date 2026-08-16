@@ -22,8 +22,8 @@
     "coRanking": "0.2.5"
   },
   "input_hashes": {
-    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "886b1d4f86648bf0ac0da161891b616d5bab6dda0cfb3c17cf68c080f9eb49ca",
-    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json": "0a2babb1ef2543decb66e37606d39d60f98049808c25234d9ef22d3bbcf3b5fc"
+    "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r": "9e5ca8791c2554a985306e353c6aea926c0e06417aed9b0ce930ca405c01def0",
+    "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.3.0.json": "3010298ceb3306deba94fb3c6b17d38b76a54add23759eefb70927c3513cfcb6"
   },
   "output_hashes": {
     "csv": "7b774aef76bc4e1b7304d17317a925d5c12a829fb8fc35999432d3063aa98d8f",
@@ -31,12 +31,36 @@
   },
   "seeds": {},
   "extra": {
-    "sizes": [200, 500, 1000, 2000],
+    "sizes": [
+      200,
+      500,
+      1000,
+      2000
+    ],
     "reps": 5,
     "supersedes": "scalability_benchmark",
     "assessment_only": true,
     "embedding_excluded": "DR/embedding time is excluded by design; see scalability_benchmark.csv for the stored per-method embedding timings",
     "memory_note": "measured_peak_r_heap_MB is R's gc max-used high-water mark, a measurement; calculated_matrix_mem_MB is the 3*8*n^2 size calculation previously reported as if measured; os_peak_rss_MB is NA because OS-level RSS requires an external observer",
     "m_note": "m=99 is the benchmark setting; m=999 is production inference"
-  }
+  },
+  "rebind_history": [
+    {
+      "action": "refresh input hashes after LF normalization",
+      "fields": [
+        "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
+        "Rcode-QAIDR/QAIDR/analysis/scripts/_common.r"
+      ],
+      "note": "line-ending-only change; verified recorded hash equals the CRLF form of the same bytes",
+      "when": "2026-08-16 09:30:25 +0800"
+    },
+    {
+      "action": "bind to immutable versioned source manifest",
+      "producing_qaidr_version": "0.3.0",
+      "manifest": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest_qaidr-0.3.0.json",
+      "replaced_key": "Rcode-QAIDR/QAIDR/analysis/provenance/package_source_manifest.json",
+      "note": "producing version preserved; packages/output_hashes untouched",
+      "when": "2026-08-16 09:30:25 +0800"
+    }
+  ]
 }

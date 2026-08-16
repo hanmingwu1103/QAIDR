@@ -5,20 +5,20 @@
   "note": "Immutable source manifest for QAIDR 0.3.0 -- describes the source that produced artifacts recorded as this version. Never regenerate in place; create a new version-labelled manifest instead.",
   "source_tree": "Rcode-QAIDR/QAIDR (working tree)",
   "n_files": 13,
-  "created": "2026-08-16 09:00:16 +0800",
+  "created": "2026-08-16 09:27:36 +0800",
   "files": {
     "DESCRIPTION": "4d92c1c0a7b22e24593bc992a14e6163b815d91ac1c7a94743e7636c26d8944c",
-    "NAMESPACE": "dcb6d2ac28fad67f0f9fb71d4d939757ea2296a685c73536f7c7f80d47bb9c8f",
+    "NAMESPACE": "939cd5100ac784a6e73656491ba5debcd89bfa98bcad71602ba157a2393b8a13",
     "R/assessment.R": "20714a6bd78a311d1b674675574d63a048b4e634ba8338eef00f89582211cbbc",
     "R/coranking.R": "b18099794818183893d7e491818a626ce15d6fbab0693ef26c396124d16dc868",
-    "R/data.R": "4d88bba5bb876cbc91af3da42ecad7a9a0572492e406af31d11af2f6814ce28d",
-    "R/distances.R": "2bc1f9e40770a20279eaed492467446d393de5b366447244e88d93b415495af9",
-    "R/dr-methods.R": "00a023d3e8cd50038bc702fd07c112efd368eb56dd3e9a2fc39b63799f831f2f",
-    "R/interval-data.R": "6269fcd677a4050bcce93ee716bbdf758cf92ff33e0426f5babfde1f7e896544",
-    "R/plotting.R": "e2834ea95142088e5d992b8a0fed581d15b5f8a18fe95d8328b372d8b79cc894",
-    "R/QAIDR-package.R": "8689b58e9d0f588b29c4c0d04a5d92e9293b72d950ff43f7b3fdbe4d7d22dacc",
-    "R/simulation.R": "7527394b66cf26f2418c9ff249a331b5bf20c1191ae4fc085bf06d01ada16353",
-    "R/utils-convert.R": "e35ca19385516bf9cd39b5b1e8be0b5636805482c664c24842faf021ef97ed4b",
-    "R/utils-format.R": "53bdc5f9aeacc57760a64b4cd4bf46841acdddf47ba6886444278a4b1c9d8c79"
+    "R/data.R": "842213bc5e0e5bd7d4f56aa78420bc77d66623cbe814db8bbd06edfac056a799",
+    "R/distances.R": "993e400dc817f26f7de2e2608749ed2b24cac659905e5f527a65dc1491e2a8bd",
+    "R/dr-methods.R": "af49676a83e3d24a3104f6b340e5fce5e3d8bef0af90898da3f012102e28a9f8",
+    "R/interval-data.R": "801f9349e9e95d14cd1b0a2e73e7de63e4b5bfc110cd0b9e489894e6b2d9247a",
+    "R/plotting.R": "3f3ee9a22aaee004f9749af44573ec0275513aa36008f6cd84e403d8791fcbdf",
+    "R/QAIDR-package.R": "469422001d7b810424a3c569def6be34e8c32725a5a7fe43e98fddbafebb200c",
+    "R/simulation.R": "cb3deac35cf7ea388b8a5927a943d6a34de18e1c7e98685fd2c48c01abd5e0c7",
+    "R/utils-convert.R": "0beb445a6cb298dc2ca82ddbb17b3cb005ce2854ac9de359126f67bdd69f6690",
+    "R/utils-format.R": "4a54013a255aaec3a5541bd0ff131a192db903b16f18fa82f75e7d38a278d5f6"
   }
 }
