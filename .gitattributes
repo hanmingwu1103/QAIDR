@@ -20,3 +20,6 @@ analysis/output/*_sessionInfo.txt whitespace=-blank-at-eol
 analysis/output/** -text
 analysis/data-processed/** -text
 analysis/data-raw/** -text
+
+# Provenance records are hashed by the sidecars; never convert them either.
+analysis/provenance/** -text
