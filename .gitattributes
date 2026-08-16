@@ -1,2 +1,14 @@
 # R's printed sessionInfo() aligns columns with intentional trailing spaces.
 analysis/output/*_sessionInfo.txt whitespace=-blank-at-eol
+
+# Reproducibility: normalize all text to LF in the repository AND on checkout,
+# so that the working tree, the committed blobs, and `git archive` output are
+# byte-identical. Without this, core.autocrlf=true exports CRLF while the
+# repository stores LF, and the SHA-256 source manifests verify against neither.
+* text=auto eol=lf
+# Binary payloads must never be converted.
+*.rds binary
+*.pdf binary
+*.png binary
+*.zip binary
+*.tar.gz binary
