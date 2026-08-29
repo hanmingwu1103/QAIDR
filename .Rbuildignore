@@ -10,7 +10,7 @@
 ^_build_site\.R$
 ^pkgdown$
 ^analysis$
-^README_REPRODUCIBILITY\.md$
+^[Rr][Ee][Aa][Dd][Mm][Ee]_[Rr][Ee][Pp][Rr][Oo][Dd][Uu][Cc][Ii][Bb][Ii][Ll][Ii][Tt][Yy]\.md$
 ^cran-comments\.md$
 ^\.gitattributes$
 ^git$
